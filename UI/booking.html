@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking</title>
+    <link rel="stylesheet" href="booking.css">
+</head>
+<body>
 
+    <header>
+        <nav class="navbar">
+            <div class="logo">Nom de l'Hôtel</div>
+            <ul class="nav-links">
+                <li><a href="welcome.html">Accueil</a></li>
+                <li><a href="#">Réservations</a></li>
+                <li><a href="hotels.html">Hôtels</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<main>
+    <!-- Login Form -->
+    <section id="login-form" class="form-section active">
+        <h2>Connexion</h2>
+        <form id="loginForm">
+            <label for="username">Nom d'utilisateur:</label>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Mot de passe:</label>
+            <input type="password" id="password" name="password" required><br>
+            <label for="role">Rôle:</label><br>
+            <label class="switch">
+                <input type="radio" id="role-client" name="role" value="client" required>
+                <span class="slider"></span> Client
+            </label>
+            
+            <label class="switch">
+                <input type="radio" id="role-employe" name="role" value="employe">
+                <span class="slider"></span> Employé
+            </label>            
+            <button type="submit">Se connecter</button>
+        </form>
+    </section>
+
+    <!-- Booking Section (for clients) -->
+    <section id="booking-section" class="form-section">
+        <h2>Réservation de chambre</h2>
+        <form id="searchForm">
+            <label for="check-in">Date d'arrivée:</label>
+            <input type="date" id="check-in" name="check-in" required><br>
+            <label for="check-out">Date de départ:</label>
+            <input type="date" id="check-out" name="check-out" required><br>
+            <label for="capacity">Capacité:</label>
+            <input type="number" id="capacity" name="capacity" required><br>
+            <label for="price">Prix maximum (€/nuit):</label>
+            <input type="number" id="price" name="price"><br>
+            <label for="hotel-chain">Chaîne hôtelière:</label>
+            <select id="hotel-chain" name="hotel-chain">
+                <option value="">Toutes</option>
+                <option value="luxury">Luxury</option>
+                <option value="budget">Budget</option>
+            </select><br>
+            <label for="category">Catégorie:</label>
+            <select id="category" name="category">
+                <option value="">Toutes</option>
+                <option value="5-star">5-star</option>
+                <option value="3-star">3-star</option>
+            </select><br>
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <div id="roomResults"></div>
+    </section>
+
+    <!-- Employee Dashboard -->
+    <section id="employeeDashboard" class="form-section">
+        <h2>Tableau de bord Employé</h2>
+
+        <!-- Convert reservation to rental -->
+        <h3>Convertir une réservation en location</h3>
+        <form id="convertForm">
+            <label for="reservation-id">ID de réservation:</label>
+            <input type="text" id="reservation-id" name="reservation-id" required><br>
+            <button type="submit">Convertir</button>
+        </form>
+
+        <!-- Create direct rental -->
+        <h3>Créer une location directement</h3>
+        <form id="directRentalForm">
+            <label for="room-id">ID de la chambre:</label>
+            <input type="text" id="room-id" name="room-id" required><br>
+            <label for="rental-date">Date de location:</label>
+            <input type="date" id="rental-date" name="rental-date" required><br>
+            <button type="submit">Créer la location</button>
+        </form>
+
+        <!-- Record payment -->
+        <h3>Enregistrer un paiement</h3>
+        <form id="paymentForm">
+            <label for="rental-id">ID de location:</label>
+            <input type="text" id="rental-id" name="rental-id" required><br>
+            <label for="payment-amount">Montant du paiement (€):</label>
+            <input type="number" id="payment-amount" name="payment-amount" required><br>
+            <button type="submit">Enregistrer le paiement</button>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <div class="foottext">
+        <p>&copy; 2025 "name". Tous droits réservés.</p>
+        <p><a href="privacy.html">Politique de confidentialité</a> | <a href="terms.html">Conditions d'utilisation</a></p>
+    </div>
+</footer>
+
+<script src="booking.js"></script>
+</body>
+</html>
