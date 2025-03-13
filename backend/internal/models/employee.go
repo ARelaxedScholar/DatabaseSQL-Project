@@ -6,16 +6,16 @@ import (
 )
 
 type Employee struct {
-	id        int
-	sin       string
-	firstName string
-	lastName  string
-	address   string
-	phone     string
-	email     string
-	hotelId   int
-	position  string
-	hireDate  time.Time
+	ID        int
+	SIN       string
+	FirstName string
+	LastName  string
+	Address   string
+	Phone     string
+	Email     string
+	HotelId   int
+	Position  string
+	HireDate  time.Time
 }
 
 func NewEmployee(sin, firstName, lastName, address, phone, email, position string, id, hotelId int, hireDate time.Time) (*Employee, error) {
@@ -44,15 +44,15 @@ func NewEmployee(sin, firstName, lastName, address, phone, email, position strin
 		return nil, err
 	}
 	return &Employee{
-		id:        id,
-		sin:       sin,
-		firstName: firstName,
-		lastName:  lastName,
-		address:   address,
-		phone:     phone,
-		email:     email,
-		hotelId:   hotelId,
-		position:  position,
-		hireDate:  hireDate,
+		ID:        id,
+		SIN:       sin,
+		FirstName: firstName,
+		LastName:  lastName,
+		Address:   address,
+		Phone:     phone,
+		Email:     email,
+		HotelId:   hotelId,
+		Position:  position,
+		HireDate:  hireDate,
 	}, nil
 }
