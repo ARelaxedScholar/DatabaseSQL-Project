@@ -96,6 +96,25 @@ func (self RoomType) isValid() bool {
 	}
 }
 
+// ### RESERVATION STATUS SECTION
+type ReservationStatus int
+
+const (
+	Confirmed ReservationStatus = iota + 1
+	Waiting
+	Cancelled
+	Finished
+)
+
+func (self ReservationStatus) isValid() bool {
+	switch self {
+	case Confirmed, Waiting, Cancelled, Finished:
+		return true
+	default:
+		return false
+	}
+}
+
 // ### VIEW TYPE SECTION
 // View Enum
 type ViewType int
