@@ -8,3 +8,10 @@ type EmployeeRepository interface {
 	UpdateManager(mgr *models.Manager) error
 	Delete(employeeID int) error
 }
+
+type ClientRepository interface {
+	Save(client *models.Client) error
+	FindByID(id int) (*models.Client, error)
+	Update(client *models.Client) error
+	Delete(id int) error
+}

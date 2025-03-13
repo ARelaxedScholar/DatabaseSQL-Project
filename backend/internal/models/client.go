@@ -6,14 +6,14 @@ import (
 )
 
 type Client struct {
-	id        int
-	sin       string
-	firstName string
-	lastName  string
-	address   string
-	phone     string
-	email     string
-	joinDate  time.Time
+	ID        int
+	SIN       string
+	FirstName string
+	LastName  string
+	Address   string
+	Phone     string
+	Email     string
+	JoinDate  time.Time
 }
 
 func NewClient(id int, sin, firstName, lastName, address, phone, email string, joinDate time.Time) (*Client, error) {
@@ -36,13 +36,13 @@ func NewClient(id int, sin, firstName, lastName, address, phone, email string, j
 		return nil, err
 	}
 	return &Client{
-		id:        id,
-		sin:       sin,
-		firstName: firstName,
-		lastName:  lastName,
-		address:   address,
-		phone:     phone,
-		email:     email,
-		joinDate:  joinDate,
+		ID:        id,
+		SIN:       sin,
+		FirstName: firstName,
+		LastName:  lastName,
+		Address:   address,
+		Phone:     phone,
+		Email:     email,
+		JoinDate:  joinDate,
 	}, nil
 }
