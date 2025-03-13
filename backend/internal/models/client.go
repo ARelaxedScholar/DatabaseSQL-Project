@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Customer struct {
+type Client struct {
 	id        int
 	sin       string
 	firstName string
@@ -16,26 +16,26 @@ type Customer struct {
 	joinDate  time.Time
 }
 
-func NewCustomer(id int, sin, firstName, lastName, address, phone, email string, joinDate time.Time) (*Customer, error) {
+func NewClient(id int, sin, firstName, lastName, address, phone, email string, joinDate time.Time) (*Client, error) {
 	var err error
 	switch {
 	case id < 0:
-		err = errors.New("Customer ID cannot be negative.")
+		err = errors.New("Client ID cannot be negative.")
 	case sin == "" || len(sin) != 9:
-		err = errors.New("Customer's SIN must be 9 characters.")
+		err = errors.New("Client's SIN must be 9 characters.")
 	case firstName == "":
-		err = errors.New("Customer's first name cannot be empty.")
+		err = errors.New("Client's first name cannot be empty.")
 	case lastName == "":
-		err = errors.New("Customer's last name cannot be empty.")
+		err = errors.New("Client's last name cannot be empty.")
 	case joinDate.IsZero():
-		err = errors.New("Customer's join date must be provided.")
+		err = errors.New("Client's join date must be provided.")
 	case email == "":
-		err = errors.New("Customer's email cannot be empty.")
+		err = errors.New("Client's email cannot be empty.")
 	}
 	if err != nil {
 		return nil, err
 	}
-	return &Customer{
+	return &Client{
 		id:        id,
 		sin:       sin,
 		firstName: firstName,
