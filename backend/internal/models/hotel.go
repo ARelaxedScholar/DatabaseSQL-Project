@@ -109,7 +109,7 @@ type Room struct {
 	id, hotelId, capacity, floor int
 	price                        float64
 	telephone                    string
-	viewType                     ViewType
+	viewTypes                    map[ViewType]struct{}
 	roomType                     RoomType
 	isExtensible                 bool
 	amenities                    map[Amenity]struct{} // Hashset of Go (I know stupid)
@@ -201,7 +201,7 @@ func NewHotel(id, chainId, rating, numberOfRooms int,
 func NewRoom(id, hotelId, capacity, floor int,
 	price float64,
 	telephone string,
-	viewType ViewType,
+	viewTypes map[ViewType]struct{},
 	roomType RoomType,
 	isExtensible bool,
 	amenities map[Amenity]struct{}) (*Room, error) {
@@ -218,17 +218,26 @@ func NewRoom(id, hotelId, capacity, floor int,
 		err = errors.New("Room's price cannot be negative.")
 	case telephone == "":
 		err = errors.New("Room's phone Number cannot be empty")
-	case !viewType.isValid():
-		err = errors.New("Invalid variant of view type was passed to constructor")
 	case !roomType.isValid():
 		err = errors.New("Invalid variant of room type was passed to constructor")
 	}
-
-	// validate amenities
-	for k, _ := range amenities {
-		if !k.isValid() {
-			err = errors.New("The set of amenities contains an invalid variant")
-			break
+	// If we haven't already found an error
+	if err == nil {
+		// validate view types
+		for k, _ := range viewTypes {
+			if !k.isValid() {
+				err = errors.New("The set of view types contains an invalid variant")
+				break
+			}
+		}
+	}
+	if err == nil {
+		// validate amenities
+		for k, _ := range amenities {
+			if !k.isValid() {
+				err = errors.New("The set of amenities contains an invalid variant")
+				break
+			}
 		}
 	}
 
@@ -243,7 +252,7 @@ func NewRoom(id, hotelId, capacity, floor int,
 		floor:        floor,
 		price:        price,
 		telephone:    telephone,
-		viewType:     viewType,
+		viewTypes:    viewTypes,
 		roomType:     roomType,
 		isExtensible: isExtensible,
 		amenities:    amenities,
