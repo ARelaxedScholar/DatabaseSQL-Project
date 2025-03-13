@@ -5,8 +5,8 @@ import (
 )
 
 type Hotel struct {
-	id, chainId, rating, numberOfRooms int
-	name, address, email, telephone    string
+	ID, ChainID, Rating, NumberOfRooms int
+	Name, Address, Email, Telephone    string
 }
 
 func NewHotel(id, chainId, rating, numberOfRooms int,
@@ -41,14 +41,14 @@ func NewHotel(id, chainId, rating, numberOfRooms int,
 
 	// else just return
 	return &Hotel{
-		id:            id,
-		chainId:       chainId,
-		rating:        rating,
-		numberOfRooms: numberOfRooms,
-		name:          name,
-		address:       address,
-		email:         email,
-		telephone:     telephone,
+		ID:            id,
+		ChainID:       chainId,
+		Rating:        rating,
+		NumberOfRooms: numberOfRooms,
+		Name:          name,
+		Address:       address,
+		Email:         email,
+		Telephone:     telephone,
 	}, nil
 
 }
