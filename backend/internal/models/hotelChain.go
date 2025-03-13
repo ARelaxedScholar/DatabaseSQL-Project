@@ -3,8 +3,8 @@ package models
 import "errors"
 
 type HotelChain struct {
-	id, numberOfHotel                      int
-	name, centralAddress, email, telephone string
+	ID, NumberOfHotel                      int
+	Name, CentralAddress, Email, Telephone string
 }
 
 func NewHotelChain(id, numberOfHotel int, name, centralAddress, email, telephone string) (*HotelChain, error) {
@@ -36,11 +36,11 @@ func NewHotelChain(id, numberOfHotel int, name, centralAddress, email, telephone
 
 	// else just return
 	return &HotelChain{
-		id:             id,
-		numberOfHotel:  numberOfHotel,
-		name:           name,
-		centralAddress: centralAddress,
-		email:          email,
-		telephone:      telephone,
+		ID:             id,
+		NumberOfHotel:  numberOfHotel,
+		Name:           name,
+		CentralAddress: centralAddress,
+		Email:          email,
+		Telephone:      telephone,
 	}, nil
 }

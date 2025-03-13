@@ -15,3 +15,10 @@ type ClientRepository interface {
 	Update(client *models.Client) error
 	Delete(id int) error
 }
+
+type HotelChainRepository interface {
+	Save(chain *models.HotelChain) error
+	FindByID(id int) (*models.HotelChain, error)
+	Update(chain *models.HotelChain) error
+	Delete(id int) error
+}
