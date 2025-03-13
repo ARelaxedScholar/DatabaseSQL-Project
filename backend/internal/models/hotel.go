@@ -1,6 +1,8 @@
 package models
 
-import "errors"
+import (
+	"errors"
+)
 
 // Amenities Enum
 type Amenity int
@@ -113,6 +115,44 @@ type Room struct {
 	roomType                     RoomType
 	isExtensible                 bool
 	amenities                    map[Amenity]struct{} // Hashset of Go (I know stupid)
+	problems                     []Problem
+}
+
+type ProblemSeverity int
+type Problem struct {
+	id          int
+	severity    ProblemSeverity
+	description string
+}
+
+func (self Problem) validate() error {
+	var err error
+	switch {
+	case self.id < 0:
+		err = errors.New("Problem's id cannot be negative.")
+	case !self.severity.isValid():
+		err = errors.New("Problem contains invalid severity variant.")
+	case self.description == "":
+		err = errors.New("Problem's description cannot be empty.")
+	}
+	return err // note that this will be nil if none of the cases were hit
+
+}
+
+const (
+	Minor ProblemSeverity = iota + 1
+	Moderate
+	Major
+	Critical
+)
+
+func (self ProblemSeverity) isValid() bool {
+	switch self {
+	case Minor, Moderate, Major, Critical:
+		return true
+	default:
+		return false
+	}
 }
 
 // todo: Define the constructors for this
@@ -204,7 +244,8 @@ func NewRoom(id, hotelId, capacity, floor int,
 	viewTypes map[ViewType]struct{},
 	roomType RoomType,
 	isExtensible bool,
-	amenities map[Amenity]struct{}) (*Room, error) {
+	amenities map[Amenity]struct{},
+	problems []Problem) (*Room, error) {
 	var err error
 	// Validate Fields
 	switch {
@@ -236,6 +277,15 @@ func NewRoom(id, hotelId, capacity, floor int,
 		for k, _ := range amenities {
 			if !k.isValid() {
 				err = errors.New("The set of amenities contains an invalid variant")
+				break
+			}
+		}
+	}
+	if err == nil {
+		// validate amenities
+		for _, problem := range problems {
+			if e := problem.validate(); e != nil {
+				err = errors.Join(errors.New("Problem in the list of problem is invalid:\n"), e)
 				break
 			}
 		}
