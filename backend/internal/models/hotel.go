@@ -155,7 +155,7 @@ func (self ProblemSeverity) isValid() bool {
 	}
 }
 
-// todo: Define the constructors for this
+
 func NewHotelChain(id, numberOfHotel int, name, centralAddress, email, telephone string) (*HotelChain, error) {
 	var err error
 	// Validate Fields
