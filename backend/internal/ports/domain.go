@@ -9,13 +9,13 @@ import (
 // This is where we declare the core functionalities
 // we want for the app. So you can read this to know what the app does (is supposed to do) ;)
 type EmployeeService interface {
-	HireEmployee(id int, firstName, lastName, address, phone, email, position string, hotelId int, hireDate time.Time) (*models.Employee, error)
+	HireEmployee(id int, sin, firstName, lastName, address, phone, email, position string, hotelId int, hireDate time.Time) (*models.Employee, error)
 	PromoteEmployeeToManager(employeeId int, department string, authorizationLevel int) (*models.Manager, error)
 	FireEmployee(employeeId int) (*models.Employee, error)
 }
 
 type ClientService interface {
-	RegisterClient(id int, firstName, lastName, address, phone, email string, joinDate time.Time) (*models.Client, error)
+	RegisterClient(id int, sin, firstName, lastName, address, phone, email string, joinDate time.Time) (*models.Client, error)
 	UpdateClient(id int, firstName, lastName, address, phone, email string) (*models.Client, error)
 	RemoveClient(id int) error
 }
@@ -64,7 +64,7 @@ type PaymentService interface {
 	ProcessPayment(stayId int, amount float64, paymentMethod string) error
 }
 
-type ReportingService interface {
+type QueryService interface {
 	GetAvailableRoomsByZone() (map[string]int, error)
 	GetHotelRoomCapacity(hotelId int) (int, error)
 }
