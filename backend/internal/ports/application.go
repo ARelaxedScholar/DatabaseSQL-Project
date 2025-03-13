@@ -2,7 +2,6 @@ package ports
 
 import "github.com/sql-project-backend/internal/models"
 
-
 type EmployeeRepository interface {
 	Save(emp *models.Employee) error
 	FindByID(id int) (*models.Employee, error)
@@ -28,5 +27,12 @@ type HotelRepository interface {
 	Save(hotel *models.Hotel) error
 	FindByID(id int) (*models.Hotel, error)
 	Update(hotel *models.Hotel) error
+	Delete(id int) error
+}
+
+type RoomRepository interface {
+	Save(room *models.Room) error
+	FindByID(id int) (*models.Room, error)
+	Update(room *models.Room) error
 	Delete(id int) error
 }

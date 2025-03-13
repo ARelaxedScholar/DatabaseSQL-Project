@@ -3,14 +3,14 @@ package models
 import "errors"
 
 type Room struct {
-	id, hotelId, capacity, floor int
-	price                        float64
-	telephone                    string
-	viewTypes                    map[ViewType]struct{}
-	roomType                     RoomType
-	isExtensible                 bool
-	amenities                    map[Amenity]struct{} // Hashset of Go (I know stupid)
-	problems                     []Problem
+	ID, HotelID, Capacity, Floor int
+	Price                        float64
+	Telephone                    string
+	ViewTypes                    map[ViewType]struct{}
+	RoomType                     RoomType
+	IsExtensible                 bool
+	Amenities                    map[Amenity]struct{} // Hashset of Go (I know stupid)
+	Problems                     []Problem
 }
 
 func NewRoom(id, hotelId, capacity, floor int,
@@ -71,16 +71,16 @@ func NewRoom(id, hotelId, capacity, floor int,
 	}
 
 	return &Room{
-		id:           id,
-		hotelId:      hotelId,
-		capacity:     capacity,
-		floor:        floor,
-		price:        price,
-		telephone:    telephone,
-		viewTypes:    viewTypes,
-		roomType:     roomType,
-		isExtensible: isExtensible,
-		amenities:    amenities,
+		ID:           id,
+		HotelID:      hotelId,
+		Capacity:     capacity,
+		Floor:        floor,
+		Price:        price,
+		Telephone:    telephone,
+		ViewTypes:    viewTypes,
+		RoomType:     roomType,
+		IsExtensible: isExtensible,
+		Amenities:    amenities,
 	}, nil
 
 }
