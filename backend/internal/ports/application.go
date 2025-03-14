@@ -90,6 +90,7 @@ type EmployeeRepository interface {
 type ClientRepository interface {
 	Save(client *models.Client) error
 	FindByID(id int) (*models.Client, error)
+	FindByEmail(email string) (*models.Client, error)
 	Update(client *models.Client) error
 	Delete(id int) error
 }
