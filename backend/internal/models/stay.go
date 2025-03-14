@@ -6,17 +6,17 @@ import (
 )
 
 type Stay struct {
-	id                 int
-	clientId           int
-	roomId             int
-	reservationId      *int // nil for walk-ins
-	arrivalDate        time.Time
-	departureDate      time.Time
-	finalPrice         float64
-	paymentMethod      string
-	checkInEmployeeId  *int // nil if not applicable
-	checkOutEmployeeId *int // nil if not applicable
-	comments           string
+	ID                 int
+	ClientID           int
+	RoomID             int
+	ReservationID      *int // nil for walk-ins
+	ArrivalDate        time.Time
+	DepartureDate      time.Time
+	FinalPrice         float64
+	PaymentMethod      string
+	CheckInEmployeeId  *int // nil if not applicable
+	CheckOutEmployeeId *int // nil if not applicable
+	Comments           string
 }
 
 func NewStay(id int, clientId int, roomId int, checkInEmployeeId, checkOutEmployeeId, reservationId *int, arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string, comments string) (*Stay, error) {
@@ -39,16 +39,16 @@ func NewStay(id int, clientId int, roomId int, checkInEmployeeId, checkOutEmploy
 		return nil, err
 	}
 	return &Stay{
-		id:                 id,
-		clientId:           clientId,
-		roomId:             roomId,
-		reservationId:      reservationId,
-		arrivalDate:        arrivalDate,
-		departureDate:      departureDate,
-		finalPrice:         finalPrice,
-		paymentMethod:      paymentMethod,
-		checkInEmployeeId:  checkInEmployeeId,
-		checkOutEmployeeId: checkOutEmployeeId,
-		comments:           comments,
+		ID:                 id,
+		ClientID:           clientId,
+		RoomID:             roomId,
+		ReservationID:      reservationId,
+		ArrivalDate:        arrivalDate,
+		DepartureDate:      departureDate,
+		FinalPrice:         finalPrice,
+		PaymentMethod:      paymentMethod,
+		CheckInEmployeeId:  checkInEmployeeId,
+		CheckOutEmployeeId: checkOutEmployeeId,
+		Comments:           comments,
 	}, nil
 }
