@@ -50,3 +50,8 @@ type StayRepository interface {
 	Update(stay *models.Stay) error
 	Delete(id int) error
 }
+
+type QueryRepository interface {
+	GetAvailableRoomsByZone() (map[string]int, error)
+	GetHotelRoomCapacity(hotelId int) (int, error)
+}
