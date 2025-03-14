@@ -81,14 +81,14 @@ type AdminRoomManagementCase interface {
 // Their concrete implementations will likely live in framework_driven since you do need to know
 // which technology to use at that point for the methods to make sense.
 type EmployeeRepository interface {
-	Save(emp *models.Employee) error
+	Save(emp *models.Employee) (*models.Employee, error)
 	FindByID(id int) (*models.Employee, error)
 	UpdateManager(mgr *models.Manager) error
 	Delete(employeeID int) error
 }
 
 type ClientRepository interface {
-	Save(client *models.Client) error
+	Save(client *models.Client) (*models.Client, error)
 	FindByID(id int) (*models.Client, error)
 	FindByEmail(email string) (*models.Client, error)
 	Update(client *models.Client) error
@@ -96,35 +96,35 @@ type ClientRepository interface {
 }
 
 type HotelChainRepository interface {
-	Save(chain *models.HotelChain) error
+	Save(chain *models.HotelChain) (*models.HotelChain, error)
 	FindByID(id int) (*models.HotelChain, error)
 	Update(chain *models.HotelChain) error
 	Delete(id int) error
 }
 
 type HotelRepository interface {
-	Save(hotel *models.Hotel) error
+	Save(hotel *models.Hotel) (*models.Hotel, error)
 	FindByID(id int) (*models.Hotel, error)
 	Update(hotel *models.Hotel) error
 	Delete(id int) error
 }
 
 type RoomRepository interface {
-	Save(room *models.Room) error
+	Save(room *models.Room) (*models.Room, error)
 	FindByID(id int) (*models.Room, error)
 	Update(room *models.Room) error
 	Delete(id int) error
 }
 
 type ReservationRepository interface {
-	Save(reservation *models.Reservation) error
+	Save(reservation *models.Reservation) (*models.Reservation, error)
 	FindByID(id int) (*models.Reservation, error)
 	Update(reservation *models.Reservation) error
 	Delete(id int) error
 }
 
 type StayRepository interface {
-	Save(stay *models.Stay) error
+	Save(stay *models.Stay) (*models.Stay, error)
 	FindByID(id int) (*models.Stay, error)
 	Update(stay *models.Stay) error
 	Delete(id int) error
