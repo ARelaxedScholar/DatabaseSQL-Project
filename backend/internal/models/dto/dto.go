@@ -9,7 +9,7 @@ type ClientRegistrationInput struct {
 	LastName  string    `json:"lastName"`
 	Address   string    `json:"address"`
 	Phone     string    `json:"phone"`
-	Email     string    `json:"email"` // this is the username 
+	Email     string    `json:"email"` // this is the username
 	JoinDate  time.Time `json:"joinDate"`
 }
 
@@ -34,7 +34,7 @@ type ReservationInput struct {
 	EndDate         time.Time `json:"endDate"`
 	ReservationDate time.Time `json:"reservationDate"`
 	TotalPrice      float64   `json:"totalPrice"`
-	Status          string    `json:"status"`
+	Status          int       `json:"status"` // we have in-house representation of this
 }
 
 type ReservationOutput struct {
@@ -44,7 +44,7 @@ type ReservationOutput struct {
 	StartDate     time.Time `json:"startDate"`
 	EndDate       time.Time `json:"endDate"`
 	TotalPrice    float64   `json:"totalPrice"`
-	Status        string    `json:"status"`
+	Status        int       `json:"status"`
 }
 
 type ClientProfileOutput struct {
