@@ -6,14 +6,14 @@ import (
 )
 
 type Reservation struct {
-	id              int
-	clientId        int
-	roomId          int
-	startDate       time.Time
-	endDate         time.Time
-	totalPrice      float64
-	reservationDate time.Time
-	status          ReservationStatus
+	ID              int
+	ClientID        int
+	RoomID          int
+	StartDate       time.Time
+	EndDate         time.Time
+	TotalPrice      float64
+	ReservationDate time.Time
+	Status          ReservationStatus
 }
 
 func NewReservation(id, clientId int, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status ReservationStatus) (*Reservation, error) {
@@ -36,13 +36,13 @@ func NewReservation(id, clientId int, roomId int, startDate, endDate, reservatio
 		return nil, err
 	}
 	return &Reservation{
-		id:              id,
-		clientId:        clientId,
-		roomId:          roomId,
-		startDate:       startDate,
-		endDate:         endDate,
-		totalPrice:      totalPrice,
-		reservationDate: reservationDate,
-		status:          status,
+		ID:              id,
+		ClientID:        clientId,
+		RoomID:          roomId,
+		StartDate:       startDate,
+		EndDate:         endDate,
+		TotalPrice:      totalPrice,
+		ReservationDate: reservationDate,
+		Status:          status,
 	}, nil
 }

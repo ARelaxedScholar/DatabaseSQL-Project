@@ -36,3 +36,10 @@ type RoomRepository interface {
 	Update(room *models.Room) error
 	Delete(id int) error
 }
+
+type ReservationRepository interface {
+	Save(reservation *models.Reservation) error
+	FindByID(id int) (*models.Reservation, error)
+	Update(reservation *models.Reservation) error
+	Delete(id int) error
+}
