@@ -1,6 +1,79 @@
 package ports
 
-import "github.com/sql-project-backend/internal/models"
+import (
+	"github.com/sql-project-backend/internal/models"
+	"github.com/sql-project-backend/internal/models/dto"
+)
+
+//import "github.com/sql-project-backend/internal/models/dto"
+
+// Outline all possible usecases
+// at this point I foresee some of em might be dropped/just directly implemented without interface
+// this is for architecting (For now the Admin use cases can be more or less ignored until the rest is done)
+
+// ## Client USE CASES
+type ClientRegistrationUseCase interface {
+	RegisterClient(input dto.ClientRegistrationInput) (dto.ClientRegistrationOutput, error)
+}
+
+type ClientLoginUseCase interface {
+	Login(input dto.ClientLoginInput) (dto.ClientLoginOutput, error)
+}
+
+type ClientMakeReservationUseCase interface {
+	MakeReservation(input dto.ReservationInput) (dto.ReservationOutput, error)
+}
+
+type ClientReservationsManagementUseCase interface {
+	ViewReservations(clientID int) ([]dto.ReservationOutput, error)
+	CancelReservation(reservationID int) error
+}
+
+type ClientProfileManagementUseCase interface {
+	GetProfile(clientID int) (dto.ClientProfileOutput, error)
+	UpdateProfile(input dto.ClientProfileUpdateInput) (dto.ClientProfileOutput, error)
+}
+
+// ## Employee USE CASES
+type EmployeeRegistrationUseCase interface {
+	RegisterEmployee(input dto.EmployeeRegistrationInput) (dto.EmployeeRegistrationOutput, error)
+}
+
+type EmployeeLoginUseCase interface {
+	Login(input dto.EmployeeLoginInput) (dto.EmployeeLoginOutput, error)
+}
+
+type EmployeeCheckInUseCase interface {
+	CheckIn(input dto.CheckInInput) (dto.CheckInOutput, error)
+}
+
+type EmployeeCreateNewStayUseCase interface {
+	CreateNewStay(input dto.NewStayInput) (dto.NewStayOutput, error)
+}
+
+// ## Anonymous
+type SearchRoomsUseCase interface {
+	SearchRooms(input dto.RoomSearchInput) (dto.RoomSearchOutput, error)
+}
+
+// ## Admin USE CASES (Right now no requirement for that so kind of an after thought)
+type AdminHotelManagementUseCase interface {
+	AddHotel(input dto.HotelInput) (dto.HotelOutput, error)
+	UpdateHotel(input dto.HotelInput) (dto.HotelOutput, error)
+	DeleteHotel(hotelID int) error
+}
+
+type AdminHotelChainUseManagementCase interface {
+	AddHotelChain(input dto.HotelChainInput) (dto.HotelChainOutput, error)
+	UpdateHotelChain(input dto.HotelChainInput) (dto.HotelChainOutput, error)
+	DeleteHotelChain(chainID int) error
+}
+
+type AdminRoomManagementCase interface {
+	AddRoom(input dto.RoomInput) (dto.RoomOutput, error)
+	UpdateRoom(input dto.RoomUpdateInput) (dto.RoomOutput, error)
+	DeleteRoom(roomID int) error
+}
 
 // ## REPOSITORIES
 // The part of the code that handles persistence (still db-technology agnostic)
