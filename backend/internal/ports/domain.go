@@ -43,18 +43,18 @@ type RoomService interface {
 }
 
 type ReservationService interface {
-	CreateReservation(id int, clientId, status string, roomId int,
-		startDate, endDate, reservationDate time.Time, totalPrice float64) (*models.Reservation, error)
-	UpdateReservation(id int, clientId, status string, roomId int,
-		startDate, endDate, reservationDate time.Time, totalPrice float64) (*models.Reservation, error)
+	CreateReservation(id, clientId, roomId int,
+		startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error)
+	UpdateReservation(id, clientId, roomId int,
+		startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error)
 	CancelReservation(id int) error
 }
 
 type StayService interface {
-	RegisterStay(id int, clientId string, roomId int, reservationId *int,
+	RegisterStay(id, clientId, roomId int, reservationId *int,
 		arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string,
 		checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error)
-	UpdateStay(id int, clientId string, roomId int, reservationId *int,
+	UpdateStay(id, clientId int, roomId int, reservationId *int,
 		arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string,
 		checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error)
 	EndStay(id int) error
