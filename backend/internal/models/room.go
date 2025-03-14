@@ -40,7 +40,7 @@ func NewRoom(id, hotelId, capacity, floor int,
 	// If we haven't already found an error
 	if err == nil {
 		// validate view types
-		for k, _ := range viewTypes {
+		for k := range viewTypes {
 			if !k.isValid() {
 				err = errors.New("The set of view types contains an invalid variant")
 				break
@@ -49,7 +49,7 @@ func NewRoom(id, hotelId, capacity, floor int,
 	}
 	if err == nil {
 		// validate amenities
-		for k, _ := range amenities {
+		for k := range amenities {
 			if !k.isValid() {
 				err = errors.New("The set of amenities contains an invalid variant")
 				break
