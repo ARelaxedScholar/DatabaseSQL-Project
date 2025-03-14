@@ -2,6 +2,11 @@ package ports
 
 import "github.com/sql-project-backend/internal/models"
 
+// ## REPOSITORIES
+// The part of the code that handles persistence (still db-technology agnostic)
+// While defined in the application layer since other application code will depend on these most likely
+// Their concrete implementations will likely live in framework_driven since you do need to know
+// which technology to use at that point for the methods to make sense.
 type EmployeeRepository interface {
 	Save(emp *models.Employee) error
 	FindByID(id int) (*models.Employee, error)
