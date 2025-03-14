@@ -23,10 +23,11 @@ func (s *DefaultStayService) RegisterStay(id, clientId, roomId int, reservationI
 	if err != nil {
 		return nil, err
 	}
-	if err = s.stayRepo.Save(stay); err != nil {
+	dbStay, err := s.stayRepo.Save(stay)
+	if err != nil {
 		return nil, err
 	}
-	return stay, nil
+	return dbStay, nil
 }
 
 func (s *DefaultStayService) UpdateStay(id, clientId, roomId int, reservationId *int, arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string, checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error) {

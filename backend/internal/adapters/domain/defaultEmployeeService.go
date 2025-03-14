@@ -23,11 +23,11 @@ func (s *DefaultEmployeeService) HireEmployee(id int, sin, firstName, lastName, 
 	if err != nil {
 		return nil, err
 	}
-
-	if err = s.employeeRepo.Save(emp); err != nil {
+	dbEmployee, err := s.employeeRepo.Save(emp)
+	if err != nil {
 		return nil, err
 	}
-	return emp, nil
+	return dbEmployee, nil
 }
 
 func (s *DefaultEmployeeService) PromoteEmployeeToManager(employeeId int, department string, authorizationLevel int) (*models.Manager, error) {

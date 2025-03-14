@@ -23,10 +23,11 @@ func (s *DefaultReservationService) CreateReservation(id, clientId, roomId int, 
 	if err != nil {
 		return nil, err
 	}
-	if err = s.reservationRepo.Save(reservation); err != nil {
+	dbReservation, err := s.reservationRepo.Save(reservation)
+	if err != nil {
 		return nil, err
 	}
-	return reservation, nil
+	return dbReservation, nil
 }
 
 func (s *DefaultReservationService) UpdateReservation(id, clientId, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error) {

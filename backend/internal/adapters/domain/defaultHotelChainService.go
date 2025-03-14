@@ -22,10 +22,11 @@ func (s *DefaultHotelChainService) CreateHotelChain(id, numberOfHotel int, name,
 	if err != nil {
 		return nil, err
 	}
-	if err = s.hotelChainRepo.Save(chain); err != nil {
+	dbHotelChain, err := s.hotelChainRepo.Save(chain)
+	if err != nil {
 		return nil, err
 	}
-	return chain, nil
+	return dbHotelChain, nil
 }
 
 func (s *DefaultHotelChainService) UpdateHotelChain(id, numberOfHotel int, name, centralAddress, email, telephone string) (*models.HotelChain, error) {

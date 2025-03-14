@@ -22,10 +22,11 @@ func (s *DefaultHotelService) AddHotel(id, chainId, rating, numberOfRooms int, n
 	if err != nil {
 		return nil, err
 	}
-	if err = s.hotelRepo.Save(hotel); err != nil {
+	dbHotel, err := s.hotelRepo.Save(hotel)
+	if err != nil {
 		return nil, err
 	}
-	return hotel, nil
+	return dbHotel, nil
 }
 
 func (s *DefaultHotelService) UpdateHotel(id, chainId, rating, numberOfRooms int, name, address, email, phone string) (*models.Hotel, error) {

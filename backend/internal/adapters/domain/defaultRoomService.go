@@ -25,10 +25,11 @@ func (s *DefaultRoomService) AddRoom(id, hotelId, capacity, floor int, price flo
 	if err != nil {
 		return nil, err
 	}
-	if err = s.roomRepo.Save(room); err != nil {
+	dbRoom, err := s.roomRepo.Save(room)
+	if err != nil {
 		return nil, err
 	}
-	return room, nil
+	return dbRoom, nil
 }
 
 func (s *DefaultRoomService) UpdateRoom(id, hotelId, capacity, floor int, price float64, telephone string,

@@ -23,11 +23,11 @@ func (s *DefaultClientService) RegisterClient(id int, sin, firstName, lastName, 
 	if err != nil {
 		return nil, err
 	}
-
-	if err = s.clientRepo.Save(client); err != nil {
+	dbClient, err := s.clientRepo.Save(client)
+	if err != nil {
 		return nil, err
 	}
-	return client, nil
+	return dbClient, nil
 }
 
 func (s *DefaultClientService) UpdateClient(id int, firstName, lastName, address, phone, email string) (*models.Client, error) {
