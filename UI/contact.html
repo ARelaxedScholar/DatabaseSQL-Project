@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Nom de l'Hôtel</title>
+    <link rel="stylesheet" href="contact.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Nom de l'Hôtel</div>
+            <ul class="nav-links">
+                <li><a href="welcome.html">Accueil</a></li>
+                <li><a href="booking.html">Réservations</a></li>
+                <li><a href="hotels.html">Hôtels</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="contact">
+            <h1>Contactez-nous</h1>
+            <p>Vous avez des questions ? N'hésitez pas à nous contacter en remplissant le formulaire ci-dessous.</p>
+            
+            <form action="#" method="POST">
+                <label for="name">Nom</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+                
+                <button type="submit">Envoyer</button>
+            </form>
+        </section>
+        
+        <section class="contact-info">
+            <h2>Nos coordonnées</h2>
+            <p><strong>Adresse :</strong> 123 Rue de l'Hôtel, Paris, France</p>
+            <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
+            <p><strong>Email :</strong> contact@nomhotel.com</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Nom de l'Hôtel. Tous droits réservés.</p>
+    </footer>
+</body>
+</html>
