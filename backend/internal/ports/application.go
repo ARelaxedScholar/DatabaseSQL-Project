@@ -119,6 +119,7 @@ type RoomRepository interface {
 type ReservationRepository interface {
 	Save(reservation *models.Reservation) (*models.Reservation, error)
 	FindByID(id int) (*models.Reservation, error)
+	GetByClient(clientID int) ([]*models.Reservation, error)
 	Update(reservation *models.Reservation) error
 	Delete(id int) error
 }

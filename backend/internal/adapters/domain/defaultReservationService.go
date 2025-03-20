@@ -63,3 +63,7 @@ func (s *DefaultReservationService) CancelReservation(id int) error {
 	}
 	return nil
 }
+
+func (s *DefaultReservationService) GetReservationsByClient(clientID int) ([]*models.Reservation, error) {
+	return s.reservationRepo.GetByClient(clientID)
+}

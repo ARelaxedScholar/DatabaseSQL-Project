@@ -54,6 +54,7 @@ type ReservationService interface {
 	UpdateReservation(id, clientId, roomId int,
 		startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error)
 	CancelReservation(id int) error
+	GetReservationsByClient(clientID int) ([]*models.Reservation, error)
 }
 
 type StayService interface {
