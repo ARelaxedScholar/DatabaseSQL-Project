@@ -45,6 +45,43 @@ func (self Amenity) isValid() bool {
 	}
 }
 
+func (self Amenity) String() string {
+	switch self {
+
+	case WIFI:
+		return "WIFI"
+	case TV:
+		return "TV"
+	case AC:
+		return "AC"
+	case MiniFridge:
+		return "MiniFridge"
+	case CoffeeMachine:
+		return "CoffeeMachine"
+	case AirDryer:
+		return "AirDryer"
+	case Safe:
+		return "Safe"
+	case Jacuzzi:
+		return "Jacuzzi"
+	case Balcony:
+		return "Balcony"
+	case RoomService:
+		return "RoomService"
+	case KingSizeBed:
+		return "KingSizeBed"
+	case QueenSizeBed:
+		return "QueenSizeBed"
+	case SimpleBed:
+		return "SimpleBed"
+	case Office:
+		return "Office"
+	default:
+		return "Invalid Amenity"
+	}
+
+}
+
 // ### PROBLEM SECTION
 // Problem Severity
 type ProblemSeverity int
@@ -96,6 +133,29 @@ func (self RoomType) isValid() bool {
 	}
 }
 
+func (self RoomType) String() string {
+	switch self {
+	case Simple:
+		return "Simple"
+	case Double:
+		return "Double"
+	case Twin:
+		return "Twin"
+	case Queen:
+		return "Queen"
+	case King:
+		return "King"
+	case JuniorSuite:
+		return "Junior Suite"
+	case DeluxeSuite:
+		return "Deluxe Suite"
+	case FamilialSuite:
+		return "Familial Suite"
+	default:
+		return "Invalid Room Type"
+	}
+}
+
 // ### RESERVATION STATUS SECTION
 type ReservationStatus int
 
@@ -112,6 +172,21 @@ func (self ReservationStatus) isValid() bool {
 		return true
 	default:
 		return false
+	}
+}
+
+func (self ReservationStatus) String() string {
+	switch self {
+	case Confirmed:
+		return "Confirmed"
+	case Waiting:
+		return "Waiting"
+	case Cancelled:
+		return "Cancelled"
+	case Finished:
+		return "Finished"
+	default:
+		return "Invalid Status"
 	}
 }
 
@@ -136,4 +211,24 @@ func (self ViewType) isValid() bool {
 	default:
 		return false
 	}
+}
+
+func (self ViewType) String() string {
+	switch self {
+	case Sea:
+		return "Sea"
+	case Mountain:
+		return "Mountain"
+	case City:
+		return "City"
+	case Park:
+		return "Park"
+	case Courtyard:
+		return "Courtyard"
+	case Pool:
+		return "Pool"
+	default:
+		return "Invalid View Type"
+	}
+
 }
