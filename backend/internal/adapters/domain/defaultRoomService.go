@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"time"
 
 	"github.com/sql-project-backend/internal/models"
 	"github.com/sql-project-backend/internal/ports"
@@ -63,4 +64,24 @@ func (s *DefaultRoomService) DeleteRoom(id int) error {
 		return errors.New("Room not found.")
 	}
 	return s.roomRepo.Delete(id)
+}
+
+func (s *DefaultRoomService) FindAvailableRooms(hotelID int, startDate time.Time, endDate time.Time) ([]*models.Room, error) {
+	rooms, err := s.roomRepo.FindAvailableRooms(hotelID, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+	return rooms, nil
+}
+
+func (s *DefaultRoomService) AssignRoomForReservation(reservation *models.Reservation) (int, error) {
+	rooms, err := s.FindAvailableRooms(reservation.HotelID, reservation.StartDate, reservation.EndDate)
+	if err != nil {
+		return 0, err
+	}
+	if len(rooms) == 0 {
+		return 0, errors.New("no available rooms")
+	}
+	// For simplicity, we return the first available room's ID.
+	return rooms[0].ID, nil
 }

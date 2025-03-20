@@ -40,6 +40,7 @@ type ClientLoginOutput struct {
 
 type ReservationInput struct {
 	ClientID        int       `json:"clientId"`
+	HotelID         int       `josn:"hotelID"`
 	RoomID          int       `json:"roomId"`
 	StartDate       time.Time `json:"startDate"`
 	EndDate         time.Time `json:"endDate"`

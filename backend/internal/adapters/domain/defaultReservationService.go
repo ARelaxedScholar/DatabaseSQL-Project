@@ -18,8 +18,8 @@ func NewReservationService(repo ports.ReservationRepository) ports.ReservationSe
 	}
 }
 
-func (s *DefaultReservationService) CreateReservation(id, clientId, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error) {
-	reservation, err := models.NewReservation(id, clientId, roomId, startDate, endDate, reservationDate, totalPrice, status)
+func (s *DefaultReservationService) CreateReservation(id, clientId, hotelID, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error) {
+	reservation, err := models.NewReservation(id, hotelID, clientId, roomId, startDate, endDate, reservationDate, totalPrice, status)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (s *DefaultReservationService) CreateReservation(id, clientId, roomId int, 
 	return dbReservation, nil
 }
 
-func (s *DefaultReservationService) UpdateReservation(id, clientId, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error) {
+func (s *DefaultReservationService) UpdateReservation(id, clientId, hotelId, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error) {
 	existing, err := s.reservationRepo.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (s *DefaultReservationService) UpdateReservation(id, clientId, roomId int, 
 	if existing == nil {
 		return nil, errors.New("Reservation not found.")
 	}
-	reservation, err := models.NewReservation(id, clientId, roomId, startDate, endDate, reservationDate, totalPrice, status)
+	reservation, err := models.NewReservation(id, clientId, hotelId, roomId, startDate, endDate, reservationDate, totalPrice, status)
 	if err != nil {
 		return nil, err
 	}

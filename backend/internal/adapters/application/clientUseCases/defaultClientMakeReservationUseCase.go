@@ -20,6 +20,7 @@ func (uc *DefaultClientMakeReservationUseCase) MakeReservation(input dto.Reserva
 	reservation, err := uc.reservationService.CreateReservation(
 		0, // pass a default value, let the db deal with it
 		input.ClientID,
+		input.HotelID,
 		input.RoomID,
 		input.StartDate,
 		input.EndDate,

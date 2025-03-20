@@ -7,6 +7,7 @@ import (
 
 type Reservation struct {
 	ID              int
+	HotelID         int
 	ClientID        int
 	RoomID          int
 	StartDate       time.Time
@@ -16,12 +17,14 @@ type Reservation struct {
 	Status          ReservationStatus
 }
 
-func NewReservation(id, clientId int, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status ReservationStatus) (*Reservation, error) {
+func NewReservation(id, clientId, hotelID, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status ReservationStatus) (*Reservation, error) {
 	var err error
 	switch {
 	case id < 0:
 		err = errors.New("Reservation ID cannot be negative.")
 	case clientId < 0:
+		err = errors.New("Client's ID cannot be negative.")
+	case hotelID < 0: // <- I might turn this into an ENUM later
 		err = errors.New("Client's ID cannot be negative.")
 	case roomId < 0:
 		err = errors.New("Room's ID cannot be negative.")
@@ -38,6 +41,7 @@ func NewReservation(id, clientId int, roomId int, startDate, endDate, reservatio
 	return &Reservation{
 		ID:              id,
 		ClientID:        clientId,
+		HotelID:         hotelID,
 		RoomID:          roomId,
 		StartDate:       startDate,
 		EndDate:         endDate,
