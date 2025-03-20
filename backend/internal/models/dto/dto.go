@@ -2,6 +2,17 @@ package dto
 
 import "time"
 
+// New unified Client/Employee output
+type AccountOutput struct {
+	AccountID int       `json:"accountId"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Email     string    `json:"email"`
+	Role      string    `json:"role"` // e.g. "client" or "employee"
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
 // Client DTOs
 type ClientRegistrationInput struct {
 	SIN       string    `json:"sin"`
@@ -58,13 +69,33 @@ type ClientProfileOutput struct {
 	JoinDate  time.Time `json:"joinDate"`
 }
 
+// Used by Client
 type ClientProfileUpdateInput struct {
 	ClientID  int    `json:"clientId"`
+	FirstName string `json:"firstName,omitempty"`
+	LastName  string `json:"lastName,omitempty"`
+	Address   string `json:"address,omitempty"`
+	Phone     string `json:"phone,omitempty"`
+	Email     string `json:"email,omitempty"`
+}
+
+// Used by Admin (Split object in case of future divergence)
+type ClientAccountInput struct {
+	SIN       string `json:"sin"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Address   string `json:"address"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email"`
+	Password  string `json:"password"`
+}
+
+type ClientAccountUpdateInput struct {
+	FirstName string `json:"firstName,omitempty"`
+	LastName  string `json:"lastName,omitempty"`
+	Address   string `json:"address,omitempty"`
+	Phone     string `json:"phone,omitempty"`
+	Email     string `json:"email,omitempty"`
 }
 
 // Employee DTOs
@@ -93,6 +124,29 @@ type EmployeeLoginInput struct {
 type EmployeeLoginOutput struct {
 	EmployeeID int    `json:"employeeId"`
 	Token      string `json:"token"`
+}
+
+// Used by Admin
+type EmployeeAccountInput struct {
+	SIN       string `json:"sin"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Address   string `json:"address"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	Position  string `json:"position"`
+	HotelID   int    `json:"hotelId"`
+	Password  string `json:"password"`
+}
+
+type EmployeeAccountUpdateInput struct {
+	FirstName string `json:"firstName,omitempty"`
+	LastName  string `json:"lastName,omitempty"`
+	Address   string `json:"address,omitempty"`
+	Phone     string `json:"phone,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Position  string `json:"position,omitempty"`
+	HotelID   int    `json:"hotelId,omitempty"`
 }
 
 type CheckInInput struct {
@@ -192,15 +246,15 @@ type RoomInput struct {
 
 type RoomUpdateInput struct {
 	ID           int      `json:"id"`
-	HotelID      int      `json:"hotelId"`
-	Capacity     int      `json:"capacity"`
-	Floor        int      `json:"floor"`
-	Price        float64  `json:"price"`
-	Telephone    string   `json:"telephone"`
-	ViewTypes    []string `json:"viewTypes"`
-	RoomType     string   `json:"roomType"`
-	IsExtensible bool     `json:"isExtensible"`
-	Amenities    []string `json:"amenities"`
+	HotelID      int      `json:"hotelId,omitempty"`
+	Capacity     int      `json:"capacity,omitempty"`
+	Floor        int      `json:"floor,omitempty"`
+	Price        float64  `json:"price,omitempty"`
+	Telephone    string   `json:"telephone,omitempty"`
+	ViewTypes    []string `json:"viewTypes,omitempty"`
+	RoomType     string   `json:"roomType,omitempty"`
+	IsExtensible bool     `json:"isExtensible,omitempty"`
+	Amenities    []string `json:"amenities,omitempty"`
 }
 
 type RoomOutputAdmin struct {
