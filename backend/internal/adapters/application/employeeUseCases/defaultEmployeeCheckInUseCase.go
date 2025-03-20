@@ -37,7 +37,7 @@ func (uc *DefaultEmployeeCheckInUseCase) CheckIn(input dto.CheckInInput) (dto.Ch
 	}
 
 	roomID := reservation.RoomID
-	if roomID == 0 {
+	if roomID == 0 { // if default room ID is passed we look for a free room
 		roomID, err = uc.AssignRoomForReservation(reservation)
 		if err != nil {
 			return dto.CheckInOutput{}, err

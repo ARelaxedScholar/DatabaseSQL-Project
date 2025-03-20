@@ -41,10 +41,12 @@ type EmployeeLoginUseCase interface {
 	Login(input dto.EmployeeLoginInput) (dto.EmployeeLoginOutput, error)
 }
 
+// This when we already have a reservation
 type EmployeeCheckInUseCase interface {
 	CheckIn(input dto.CheckInInput) (dto.CheckInOutput, error)
 }
 
+// This is for when stays are created outside of check-in context
 type EmployeeCreateNewStayUseCase interface {
 	CreateNewStay(input dto.NewStayInput) (dto.NewStayOutput, error)
 }
