@@ -35,10 +35,6 @@ type ClientProfileManagementUseCase interface {
 }
 
 // ## Employee USE CASES
-type EmployeeRegistrationUseCase interface {
-	RegisterEmployee(input dto.EmployeeRegistrationInput) (dto.EmployeeRegistrationOutput, error)
-}
-
 type EmployeeLoginUseCase interface {
 	Login(input dto.EmployeeLoginInput) (dto.EmployeeLoginOutput, error)
 }
@@ -73,6 +69,18 @@ type AdminRoomManagementCase interface {
 	AddRoom(input dto.RoomInput) (dto.RoomOutput, error)
 	UpdateRoom(input dto.RoomUpdateInput) (dto.RoomOutput, error)
 	DeleteRoom(roomID int) error
+}
+
+type AdminAccountManagementUseCase interface {
+	GetAccount(accountID int) (dto.AccountOutput, error)
+	ListClientAccounts() ([]dto.AccountOutput, error)
+	CreateClientAccount(input dto.ClientAccountInput) (dto.AccountOutput, error)
+	UpdateClientAccount(accountID int, input dto.ClientAccountUpdateInput) (dto.AccountOutput, error)
+	DeleteClientAccount(accountID int) error
+	ListEmployeeAccounts() ([]dto.AccountOutput, error)
+	CreateEmployeeAccount(input dto.EmployeeAccountInput) (dto.AccountOutput, error)
+	UpdateEmployeeAccount(accountID int, input dto.EmployeeAccountUpdateInput) (dto.AccountOutput, error)
+	DeleteEmployeeAccount(accountID int) error
 }
 
 // ## REPOSITORIES
