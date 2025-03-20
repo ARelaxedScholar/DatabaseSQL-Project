@@ -13,7 +13,7 @@ type Employee struct {
 	Address   string
 	Phone     string
 	Email     string
-	HotelId   int
+	HotelID   int
 	Position  string
 	HireDate  time.Time
 }
@@ -51,7 +51,7 @@ func NewEmployee(sin, firstName, lastName, address, phone, email, position strin
 		Address:   address,
 		Phone:     phone,
 		Email:     email,
-		HotelId:   hotelId,
+		HotelID:   hotelId,
 		Position:  position,
 		HireDate:  hireDate,
 	}, nil

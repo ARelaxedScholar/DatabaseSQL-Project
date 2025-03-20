@@ -63,13 +63,13 @@ type AdminHotelManagementUseCase interface {
 	DeleteHotel(hotelID int) error
 }
 
-type AdminHotelChainUseManagementCase interface {
+type AdminHotelChainManagementUseCase interface {
 	AddHotelChain(input dto.HotelChainInput) (dto.HotelChainOutput, error)
 	UpdateHotelChain(input dto.HotelChainInput) (dto.HotelChainOutput, error)
 	DeleteHotelChain(chainID int) error
 }
 
-type AdminRoomManagementCase interface {
+type AdminRoomManagementUseCase interface {
 	AddRoom(input dto.RoomInput) (dto.RoomOutput, error)
 	UpdateRoom(input dto.RoomUpdateInput) (dto.RoomOutput, error)
 	DeleteRoom(roomID int) error
@@ -96,6 +96,8 @@ type EmployeeRepository interface {
 	Save(emp *models.Employee) (*models.Employee, error)
 	FindByID(id int) (*models.Employee, error)
 	FindByEmail(email string) (*models.Employee, error)
+	ListAllEmployees() ([]*models.Employee, error)
+	UpdateEmployee(emp *models.Employee) (*models.Employee, error)
 	UpdateManager(mgr *models.Manager) error
 	Delete(employeeID int) error
 }
@@ -104,10 +106,10 @@ type ClientRepository interface {
 	Save(client *models.Client) (*models.Client, error)
 	FindByID(id int) (*models.Client, error)
 	FindByEmail(email string) (*models.Client, error)
-	Update(client *models.Client) error
+	ListAllClients() ([]*models.Client, error)
+	Update(client *models.Client) (*models.Client, error)
 	Delete(id int) error
 }
-
 type HotelChainRepository interface {
 	Save(chain *models.HotelChain) (*models.HotelChain, error)
 	FindByID(id int) (*models.HotelChain, error)

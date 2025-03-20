@@ -45,7 +45,7 @@ func (s *DefaultClientService) UpdateClient(id int, firstName, lastName, address
 	client.Phone = phone
 	client.Email = email
 
-	if err = s.clientRepo.Update(client); err != nil {
+	if client, err = s.clientRepo.Update(client); err != nil {
 		return nil, err
 	}
 	return client, nil
