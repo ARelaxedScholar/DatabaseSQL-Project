@@ -1,6 +1,8 @@
 package ports
 
 import (
+	"time"
+
 	"github.com/sql-project-backend/internal/models"
 	"github.com/sql-project-backend/internal/models/dto"
 )
@@ -123,6 +125,7 @@ type RoomRepository interface {
 	FindByID(id int) (*models.Room, error)
 	Update(room *models.Room) error
 	Delete(id int) error
+	FindAvailableRooms(hotelID int, startDate time.Time, endDate time.Time) ([]*models.Room, error)
 }
 
 type ReservationRepository interface {

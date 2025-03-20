@@ -46,12 +46,14 @@ type RoomService interface {
 		viewTypes map[models.ViewType]struct{}, roomType models.RoomType, isExtensible bool,
 		amenities map[models.Amenity]struct{}, problems []models.Problem) (*models.Room, error)
 	DeleteRoom(id int) error
+	AssignRoomForReservation(reservation *models.Reservation) (int, error)
+	FindAvailableRooms(hotelID int, startDate time.Time, endDate time.Time) ([]*models.Room, error)
 }
 
 type ReservationService interface {
-	CreateReservation(id, clientId, roomId int,
+	CreateReservation(id, clientId, hotelID, roomId int,
 		startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error)
-	UpdateReservation(id, clientId, roomId int,
+	UpdateReservation(id, clientId, hotelID, roomId int,
 		startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error)
 	CancelReservation(id int) error
 	GetReservationsByClient(clientID int) ([]*models.Reservation, error)
