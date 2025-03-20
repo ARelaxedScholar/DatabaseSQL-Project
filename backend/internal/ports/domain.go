@@ -23,6 +23,7 @@ type EmployeeService interface {
 type ClientService interface {
 	RegisterClient(id int, sin, firstName, lastName, address, phone, email string, joinDate time.Time) (*models.Client, error)
 	UpdateClient(id int, firstName, lastName, address, phone, email string) (*models.Client, error)
+	GetClientByID(clientID int) (*models.Client, error)
 	RemoveClient(id int) error
 }
 
