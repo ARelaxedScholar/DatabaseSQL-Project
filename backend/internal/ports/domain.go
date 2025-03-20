@@ -18,6 +18,7 @@ type EmployeeService interface {
 	HireEmployee(id int, sin, firstName, lastName, address, phone, email, position string, hotelId int, hireDate time.Time) (*models.Employee, error)
 	PromoteEmployeeToManager(employeeId int, department string, authorizationLevel int) (*models.Manager, error)
 	FireEmployee(employeeId int) (*models.Employee, error)
+	UpdateEmployee(employeeId int, firstName, lastName, address, phone, email, position string, hotelId int) (*models.Employee, error)
 }
 
 type ClientService interface {

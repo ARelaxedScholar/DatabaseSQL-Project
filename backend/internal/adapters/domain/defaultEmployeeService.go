@@ -52,7 +52,7 @@ func (s *DefaultEmployeeService) PromoteEmployeeToManager(employeeId int, depart
 		return nil, errors.New("Employee not found.")
 	}
 
-	mgr, err := models.NewManager(emp.SIN, emp.FirstName, emp.LastName, emp.Address, emp.Phone, emp.Email, emp.Position, emp.ID, emp.HotelId, emp.HireDate, department, authorizationLevel)
+	mgr, err := models.NewManager(emp.SIN, emp.FirstName, emp.LastName, emp.Address, emp.Phone, emp.Email, emp.Position, emp.ID, emp.HotelID, emp.HireDate, department, authorizationLevel)
 	if err != nil {
 		return nil, err
 	}
@@ -80,4 +80,29 @@ func (s *DefaultEmployeeService) FireEmployee(employeeId int) (*models.Employee,
 		return nil, err
 	}
 	return emp, nil
+}
+
+func (s *DefaultEmployeeService) UpdateEmployee(employeeId int, firstName, lastName, address, phone, email, position string, hotelId int) (*models.Employee, error) {
+	employee, err := s.employeeRepo.FindByID(employeeId)
+	if err != nil {
+		return nil, err
+	}
+	if employee == nil {
+		return nil, errors.New("employee not found")
+	}
+
+	employee.FirstName = firstName
+	employee.LastName = lastName
+	employee.Address = address
+	employee.Phone = phone
+	employee.Email = email
+	employee.Position = position
+	employee.HotelID = hotelId
+
+	updatedEmployee, err := s.employeeRepo.UpdateEmployee(employee)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedEmployee, nil
 }
