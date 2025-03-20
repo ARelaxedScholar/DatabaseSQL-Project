@@ -7,16 +7,18 @@ import (
 
 type DefaultClientProfileManagementUseCase struct {
 	clientService ports.ClientService
+	clientRepo    ports.ClientRepository
 }
 
-func NewClientProfileManagementUseCase(clientService ports.ClientService) ports.ClientProfileManagementUseCase {
+func NewClientProfileManagementUseCase(clientService ports.ClientService, clientRepo ports.ClientRepository) ports.ClientProfileManagementUseCase {
 	return &DefaultClientProfileManagementUseCase{
 		clientService: clientService,
+		clientRepo:    clientRepo,
 	}
 }
 
 func (uc *DefaultClientProfileManagementUseCase) GetProfile(clientID int) (dto.ClientProfileOutput, error) {
-	client, err := uc.clientService.GetClientByID(clientID)
+	client, err := uc.clientRepo.FindByID(clientID)
 	if err != nil {
 		return dto.ClientProfileOutput{}, err
 	}

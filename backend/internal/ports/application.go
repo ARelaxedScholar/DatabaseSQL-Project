@@ -91,6 +91,7 @@ type AdminAccountManagementUseCase interface {
 type EmployeeRepository interface {
 	Save(emp *models.Employee) (*models.Employee, error)
 	FindByID(id int) (*models.Employee, error)
+	FindByEmail(email string) (*models.Employee, error)
 	UpdateManager(mgr *models.Manager) error
 	Delete(employeeID int) error
 }
