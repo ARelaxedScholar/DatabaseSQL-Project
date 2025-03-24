@@ -14,6 +14,7 @@ import (
 	defaultClientUseCases "github.com/sql-project-backend/internal/adapters/application/usecases/clientUseCases/defaultClientUseCases"
 	defaultEmployeeUseCases "github.com/sql-project-backend/internal/adapters/application/usecases/employeeUseCases/defaultEmployeeUseCases"
 	defaultServices "github.com/sql-project-backend/internal/adapters/domain/defaultServices"
+	"github.com/sql-project-backend/internal/adapters/domain/mockServices"
 	"github.com/sql-project-backend/internal/adapters/framework/driven/db/mocks"
 	"github.com/sql-project-backend/internal/adapters/framework/driving/rest"
 )
@@ -34,7 +35,7 @@ func main() {
 	// Instantiate a robust JWT token service.
 	tokenService := jwtimpl.NewJwtTokenService(secretKey, 24*time.Hour)
 
-	// Instantiate mock repositories
+	// Instantiate mock repositories.
 	clientRepo := mocks.NewMockClientRepository()
 	employeeRepo := mocks.NewMockEmployeeRepository()
 	hotelRepo := mocks.NewMockHotelRepository()
@@ -43,7 +44,7 @@ func main() {
 	reservationRepo := mocks.NewMockReservationRepository()
 	stayRepo := mocks.NewMockStayRepository()
 
-	// Instantiate domain services using the repositories
+	// Instantiate domain services using the repositories.
 	clientService := defaultServices.NewClientService(clientRepo)
 	employeeService := defaultServices.NewEmployeeService(employeeRepo)
 	hotelService := defaultServices.NewHotelService(hotelRepo)
@@ -51,28 +52,29 @@ func main() {
 	roomService := defaultServices.NewRoomService(roomRepo)
 	reservationService := defaultServices.NewReservationService(reservationRepo)
 	stayService := defaultServices.NewStayService(stayRepo)
+	paymentService := mockServices.NewPaymentService()
 
-	// Instantiate application use cases
+	// Instantiate application use cases.
 	registrationUseCase := defaultClientUseCases.NewClientRegistrationUseCase(clientService)
 	loginUseCase := defaultClientUseCases.NewClientLoginUseCase(clientRepo, tokenService)
 	profileUseCase := defaultClientUseCases.NewClientProfileManagementUseCase(clientService, clientRepo)
 	makeReservationUseCase := defaultClientUseCases.NewClientMakeReservationUseCase(reservationService)
 	resManagementUseCase := defaultClientUseCases.NewClientReservationsManagementUseCase(reservationService)
-
 	searchRoomsUseCase := defaultAnonymousUseCases.NewSearchRoomsUseCase(roomRepo)
 
 	employeeLoginUseCase := defaultEmployeeUseCases.NewEmployeeLoginUseCase(employeeRepo, tokenService)
 	checkInUseCase := defaultEmployeeUseCases.NewEmployeeCheckInUseCase(stayService, reservationRepo, roomRepo)
 	createNewStayUseCase := defaultEmployeeUseCases.NewEmployeeCreateNewStayUseCase(stayService)
+	checkoutUseCase := defaultEmployeeUseCases.NewEmployeeCheckoutUseCase(stayService, paymentService)
 
 	adminHotelManagementUseCase := defaultAdminUseCases.NewAdminHotelManagementUseCase(hotelService)
 	adminHotelChainUseCase := defaultAdminUseCases.NewAdminHotelChainManagementUseCase(hotelChainService)
 	adminRoomManagementUseCase := defaultAdminUseCases.NewAdminRoomManagementUseCase(roomService)
 	adminAccountManagementUseCase := defaultAdminUseCases.NewAdminAccountManagementUseCase(clientRepo, employeeRepo, clientService, employeeService)
 
-	// Instantiate REST handlers
+	// Instantiate REST handlers.
 	clientHandler := rest.NewClientHandler(registrationUseCase, loginUseCase, profileUseCase, makeReservationUseCase, resManagementUseCase)
-	employeeHandler := rest.NewEmployeeHandler(employeeLoginUseCase, checkInUseCase, createNewStayUseCase)
+	employeeHandler := rest.NewEmployeeHandler(employeeLoginUseCase, checkInUseCase, createNewStayUseCase, checkoutUseCase)
 	adminHandler := rest.NewAdminHandler(adminHotelManagementUseCase, adminHotelChainUseCase, adminRoomManagementUseCase, adminAccountManagementUseCase)
 	anonymousHandler := rest.NewAnonymousHandler(searchRoomsUseCase)
 
@@ -92,6 +94,8 @@ func main() {
 	router.HandleFunc("/employees/login", employeeHandler.LoginEmployee).Methods("POST")
 	router.HandleFunc("/employees/checkin", employeeHandler.CheckIn).Methods("POST")
 	router.HandleFunc("/employees/stay", employeeHandler.CreateNewStay).Methods("POST")
+	// New checkout route for employees.
+	router.HandleFunc("/employees/checkout", employeeHandler.Checkout).Methods("POST")
 
 	// Admin routes.
 	router.HandleFunc("/admin/hotels", adminHandler.AddHotel).Methods("POST")
