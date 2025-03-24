@@ -9,6 +9,12 @@ import (
 
 //import "github.com/sql-project-backend/internal/models/dto"
 
+// TokenService (For the Login)
+type TokenService interface {
+	GenerateToken(userID int) (string, error)
+	ValidateToken(token string) (int, error)
+}
+
 // Outline all possible usecases
 // at this point I foresee some of em might be dropped/just directly implemented without interface
 // this is for architecting (For now the Admin use cases can be more or less ignored until the rest is done)

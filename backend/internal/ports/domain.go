@@ -6,11 +6,6 @@ import (
 	"github.com/sql-project-backend/internal/models"
 )
 
-// TokenService (For the Login)
-type TokenService interface {
-	GenerateToken(userID int) (string, error)
-	ValidateToken(token string) (int, error)
-}
 
 // This is where we declare the core functionalities
 // we want for the app. So you can read this to know what the app does (is supposed to do) ;)
