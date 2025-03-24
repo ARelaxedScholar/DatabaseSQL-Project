@@ -1,4 +1,4 @@
-package adminUseCases
+package defaultAdminUseCases
 
 import (
 	"github.com/sql-project-backend/internal/models/dto"

@@ -1,4 +1,4 @@
-package anonymousUseCases
+package defaultAnonymousUseCases
 
 import (
 	"github.com/sql-project-backend/internal/models/dto"

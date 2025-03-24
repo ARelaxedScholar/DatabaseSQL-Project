@@ -1,4 +1,4 @@
-package clientUseCases
+package defaultClientUseCases
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package domain
+package defaultServices
 
 import (
 	"github.com/sql-project-backend/internal/ports"

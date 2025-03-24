@@ -1,4 +1,4 @@
-package adminUseCases
+package defaultAdminUseCases
 
 import (
 	"github.com/sql-project-backend/internal/models/dto"
@@ -9,7 +9,7 @@ type DefaultAdminHotelChainManagementUseCase struct {
 	hotelChainService ports.HotelChainService
 }
 
-func NewAdminHotelChainUseManagementCase(hotelChainService ports.HotelChainService) ports.AdminHotelChainManagementUseCase {
+func NewAdminHotelChainManagementUseCase(hotelChainService ports.HotelChainService) ports.AdminHotelChainManagementUseCase {
 	return &DefaultAdminHotelChainManagementUseCase{
 		hotelChainService: hotelChainService,
 	}

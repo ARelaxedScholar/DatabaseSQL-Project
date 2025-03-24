@@ -1,4 +1,4 @@
-package clientUseCases
+package defaultClientUseCases
 
 import (
 	"github.com/sql-project-backend/internal/models/dto"

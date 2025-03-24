@@ -1,5 +1,4 @@
-package employeeUseCases
-
+package defaultEmployeeUseCases
 import (
 	"errors"
 	"time"

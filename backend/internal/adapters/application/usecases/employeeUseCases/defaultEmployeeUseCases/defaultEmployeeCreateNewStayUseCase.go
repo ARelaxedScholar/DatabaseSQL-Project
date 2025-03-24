@@ -1,4 +1,4 @@
-package employeeUseCases
+package defaultEmployeeUseCases
 
 import (
 	"github.com/sql-project-backend/internal/models/dto"

@@ -1,4 +1,4 @@
-package adminUseCases
+package defaultAdminUseCases
 
 import (
 	"errors"
