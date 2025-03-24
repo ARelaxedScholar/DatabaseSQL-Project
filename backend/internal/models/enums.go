@@ -1,5 +1,10 @@
 package models
 
+import (
+	"errors"
+	"strings"
+)
+
 // ### AMENITIES SECTION
 //
 //	Amenities Enum
@@ -82,7 +87,7 @@ func (self Amenity) String() string {
 
 }
 
-func (_ Amenity) ParseAmenity(s string) (Amenity, error) {
+func ParseAmenity(s string) (Amenity, error) {
 	// trim and then lowercase the string
 	switch strings.ToLower(strings.TrimSpace(s)) {
 	case "wifi":
@@ -114,7 +119,7 @@ func (_ Amenity) ParseAmenity(s string) (Amenity, error) {
 	case "office":
 		return Office, nil
 	default:
-		return 999, errors.New("Invalid amenity was passed.")
+		return 0, errors.New("invalid amenity: " + s)
 	}
 }
 
@@ -189,6 +194,30 @@ func (self RoomType) String() string {
 		return "Familial Suite"
 	default:
 		return "Invalid Room Type"
+	}
+}
+
+func ParseRoomType(s string) (RoomType, error) {
+	normalized := strings.ToLower(strings.TrimSpace(s))
+	switch normalized {
+	case "simple":
+		return Simple, nil
+	case "double":
+		return Double, nil
+	case "twin":
+		return Twin, nil
+	case "queen":
+		return Queen, nil
+	case "king":
+		return King, nil
+	case "juniorsuite", "junior suite":
+		return JuniorSuite, nil
+	case "deluxesuite", "deluxe suite":
+		return DeluxeSuite, nil
+	case "familialsuite", "familial suite":
+		return FamilialSuite, nil
+	default:
+		return 0, errors.New("invalid room type: " + s)
 	}
 }
 
@@ -267,4 +296,24 @@ func (self ViewType) String() string {
 		return "Invalid View Type"
 	}
 
+}
+
+func ParseViewType(s string) (ViewType, error) {
+	normalized := strings.ToLower(strings.TrimSpace(s))
+	switch normalized {
+	case "sea":
+		return Sea, nil
+	case "mountain":
+		return Mountain, nil
+	case "city":
+		return City, nil
+	case "park":
+		return Park, nil
+	case "courtyard":
+		return Courtyard, nil
+	case "pool":
+		return Pool, nil
+	default:
+		return 0, errors.New("invalid view type: " + s)
+	}
 }
