@@ -24,6 +24,12 @@ func NewMockClientRepository() ports.ClientRepository {
 func (r *MockClientRepository) Save(client *models.Client) (*models.Client, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	// Check for duplicate email
+	for _, existingClient := range r.clients {
+		if existingClient.Email == client.Email {
+			return nil, errors.New("duplicate email")
+		}
+	}
 	client.ID = r.nextID
 	r.nextID++
 	r.clients[client.ID] = client
