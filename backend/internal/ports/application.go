@@ -52,6 +52,10 @@ type EmployeeCheckInUseCase interface {
 	CheckIn(input dto.CheckInInput) (dto.CheckInOutput, error)
 }
 
+type EmployeeCheckoutUseCase interface {
+	Checkout(input dto.CheckoutInput) (dto.CheckoutOutput, error)
+}
+
 // This is for when stays are created outside of check-in context
 type EmployeeCreateNewStayUseCase interface {
 	CreateNewStay(input dto.NewStayInput) (dto.NewStayOutput, error)
