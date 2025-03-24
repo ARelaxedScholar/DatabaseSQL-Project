@@ -7,8 +7,8 @@ import (
 
 type Manager struct {
 	Employee
-	department         string
-	authorizationLevel int
+	Department         string
+	AuthorizationLevel int
 }
 
 func NewManager(sin, firstName, lastName, address, phone, email, position string, id, hotelId int, hireDate time.Time, department string, authorizationLevel int) (*Manager, error) {
@@ -28,7 +28,7 @@ func NewManager(sin, firstName, lastName, address, phone, email, position string
 	}
 	return &Manager{
 		Employee:           *emp,
-		department:         department,
-		authorizationLevel: authorizationLevel,
+		Department:         department,
+		AuthorizationLevel: authorizationLevel,
 	}, nil
 }
