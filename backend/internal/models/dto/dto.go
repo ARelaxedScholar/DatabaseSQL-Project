@@ -201,6 +201,7 @@ type RoomOutput struct {
 	RoomType     string   `json:"roomType"`
 	IsExtensible bool     `json:"isExtensible"`
 	Amenities    []string `json:"amenities"`
+	Problems     []string `json:"problems"`
 }
 
 // Admin DTOs
@@ -243,6 +244,7 @@ type RoomInput struct {
 	RoomType     string   `json:"roomType"`
 	IsExtensible bool     `json:"isExtensible"`
 	Amenities    []string `json:"amenities"`
+	Problems     []string `json:"problems"`
 }
 
 type RoomUpdateInput struct {
@@ -256,6 +258,7 @@ type RoomUpdateInput struct {
 	RoomType     string   `json:"roomType,omitempty"`
 	IsExtensible bool     `json:"isExtensible,omitempty"`
 	Amenities    []string `json:"amenities,omitempty"`
+	Problems     []string `json:"problems,omitempty"`
 }
 
 type RoomOutputAdmin struct {
