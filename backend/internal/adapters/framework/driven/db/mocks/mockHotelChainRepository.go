@@ -24,6 +24,12 @@ func NewMockHotelChainRepository() ports.HotelChainRepository {
 func (r *MockHotelChainRepository) Save(chain *models.HotelChain) (*models.HotelChain, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	// Check for duplicate by chain name
+	for _, existingChain := range r.hotelChains {
+		if existingChain.Name == chain.Name {
+			return nil, errors.New("duplicate hotel chain: a chain with this name already exists")
+		}
+	}
 	chain.ID = r.nextID
 	r.nextID++
 	r.hotelChains[chain.ID] = chain
