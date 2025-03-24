@@ -264,3 +264,16 @@ type RoomUpdateInput struct {
 type RoomOutputAdmin struct {
 	RoomID int `json:"roomId"`
 }
+
+// CheckoutInput represents the data required to perform a checkout.
+type CheckoutInput struct {
+	StayID        int
+	FinalPrice    float64
+	PaymentMethod string
+}
+
+// CheckoutOutput represents the result of the checkout operation.
+type CheckoutOutput struct {
+	StayID  int
+	Message string
+}
