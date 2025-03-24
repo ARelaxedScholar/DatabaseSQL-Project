@@ -1,4 +1,5 @@
 package defaultServices
+
 import (
 	"errors"
 	"time"
@@ -18,7 +19,7 @@ func NewReservationService(repo ports.ReservationRepository) ports.ReservationSe
 }
 
 func (s *DefaultReservationService) CreateReservation(id, clientId, hotelID, roomId int, startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error) {
-	reservation, err := models.NewReservation(id, hotelID, clientId, roomId, startDate, endDate, reservationDate, totalPrice, status)
+	reservation, err := models.NewReservation(id, clientId, hotelID, roomId, startDate, endDate, reservationDate, totalPrice, status)
 	if err != nil {
 		return nil, err
 	}
