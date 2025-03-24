@@ -82,6 +82,42 @@ func (self Amenity) String() string {
 
 }
 
+func (_ Amenity) ParseAmenity(s string) (Amenity, error) {
+	// trim and then lowercase the string
+	switch strings.ToLower(strings.TrimSpace(s)) {
+	case "wifi":
+		return WIFI, nil
+	case "tv":
+		return TV, nil
+	case "ac":
+		return AC, nil
+	case "minifridge":
+		return MiniFridge, nil
+	case "coffeemachine":
+		return CoffeeMachine, nil
+	case "airdryer":
+		return AirDryer, nil
+	case "safe":
+		return Safe, nil
+	case "jacuzzi":
+		return Jacuzzi, nil
+	case "balcony":
+		return Balcony, nil
+	case "roomservice":
+		return RoomService, nil
+	case "kingsizebed":
+		return KingSizeBed, nil
+	case "queensizebed":
+		return QueenSizeBed, nil
+	case "simplebed":
+		return SimpleBed, nil
+	case "office":
+		return Office, nil
+	default:
+		return 999, errors.New("Invalid amenity was passed.")
+	}
+}
+
 // ### PROBLEM SECTION
 // Problem Severity
 type ProblemSeverity int
