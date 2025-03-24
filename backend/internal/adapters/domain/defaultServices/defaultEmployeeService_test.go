@@ -9,26 +9,26 @@ import (
 	"github.com/sql-project-backend/internal/adapters/framework/driven/db/mocks"
 )
 
-// TestHireEmployee_Success verifies that a valid employee is hired successfully.
 func TestHireEmployee_Success(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
 	now := time.Now()
 
+	// Hire a new employee with valid input.
 	emp, err := service.HireEmployee(0, "123456789", "John", "Doe", "123 Main St", "555-1234", "john@example.com", "Staff", 1, now)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
 	if emp.ID == 0 {
-		t.Errorf("expected non-zero employee ID, got %d", emp.ID)
+		t.Errorf("expected a non-zero employee ID, got %d", emp.ID)
 	}
 	if emp.Email != "john@example.com" {
 		t.Errorf("expected email %q, got %q", "john@example.com", emp.Email)
 	}
 }
 
-// TestHireEmployee_DuplicateEmail ensures that hiring an employee with an email that already exists fails.
 func TestHireEmployee_DuplicateEmail(t *testing.T) {
+	// For this test, we assume our mock repository prevents duplicate emails.
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
 	now := time.Now()
@@ -37,7 +37,7 @@ func TestHireEmployee_DuplicateEmail(t *testing.T) {
 	// First hire should succeed.
 	_, err := service.HireEmployee(0, "123456789", "John", "Doe", "123 Main St", "555-1234", email, "Staff", 1, now)
 	if err != nil {
-		t.Fatalf("expected no error on first hire, got %v", err)
+		t.Fatalf("expected first hire to succeed, got: %v", err)
 	}
 
 	// Second hire with the same email should fail.
@@ -46,23 +46,22 @@ func TestHireEmployee_DuplicateEmail(t *testing.T) {
 		t.Fatalf("expected error for duplicate email, got nil")
 	}
 	if !strings.Contains(strings.ToLower(err.Error()), "duplicate") {
-		t.Errorf("expected duplicate email error, got %v", err)
+		t.Errorf("expected duplicate email error, got: %v", err)
 	}
 }
 
-// TestPromoteEmployeeToManager_Success verifies that a valid promotion to manager succeeds.
 func TestPromoteEmployeeToManager_Success(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
 	now := time.Now()
 
-	// Hire an employee first.
+	// First, hire an employee.
 	emp, err := service.HireEmployee(0, "123456789", "John", "Doe", "123 Main St", "555-1234", "john@example.com", "Staff", 1, now)
 	if err != nil {
 		t.Fatalf("failed to hire employee: %v", err)
 	}
 
-	// Promote the employee.
+	// Promote the employee to manager.
 	mgr, err := service.PromoteEmployeeToManager(emp.ID, "Sales", 3)
 	if err != nil {
 		t.Fatalf("expected promotion to succeed, got error: %v", err)
@@ -70,7 +69,6 @@ func TestPromoteEmployeeToManager_Success(t *testing.T) {
 	if mgr == nil {
 		t.Fatalf("expected a valid manager, got nil")
 	}
-	// Check that manager fields are set (for example, department and authorization level)
 	if mgr.Department != "Sales" {
 		t.Errorf("expected department 'Sales', got %s", mgr.Department)
 	}
@@ -79,12 +77,11 @@ func TestPromoteEmployeeToManager_Success(t *testing.T) {
 	}
 }
 
-// TestPromoteEmployeeToManager_InvalidInput tests various invalid inputs.
 func TestPromoteEmployeeToManager_InvalidInput(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
 
-	// Negative employee id.
+	// Negative employee ID.
 	_, err := service.PromoteEmployeeToManager(-1, "Sales", 3)
 	if err == nil {
 		t.Fatal("expected error for negative employee ID")
@@ -96,18 +93,18 @@ func TestPromoteEmployeeToManager_InvalidInput(t *testing.T) {
 		t.Fatal("expected error for empty department")
 	}
 
-	// Invalid authorization level.
+	// Invalid authorization level (too low).
 	_, err = service.PromoteEmployeeToManager(1, "Sales", 0)
 	if err == nil {
-		t.Fatal("expected error for invalid authorization level")
+		t.Fatal("expected error for invalid authorization level (too low)")
 	}
+	// Invalid authorization level (too high).
 	_, err = service.PromoteEmployeeToManager(1, "Sales", 6)
 	if err == nil {
-		t.Fatal("expected error for invalid authorization level")
+		t.Fatal("expected error for invalid authorization level (too high)")
 	}
 }
 
-// TestPromoteEmployeeToManager_EmployeeNotFound tests promotion when the employee does not exist.
 func TestPromoteEmployeeToManager_EmployeeNotFound(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
@@ -119,7 +116,6 @@ func TestPromoteEmployeeToManager_EmployeeNotFound(t *testing.T) {
 	}
 }
 
-// TestFireEmployee_Success verifies that firing an employee works correctly.
 func TestFireEmployee_Success(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
@@ -127,25 +123,24 @@ func TestFireEmployee_Success(t *testing.T) {
 
 	emp, err := service.HireEmployee(0, "123456789", "John", "Doe", "123 Main St", "555-1234", "john@example.com", "Staff", 1, now)
 	if err != nil {
-		t.Fatalf("failed to hire employee: %v", err)
+		t.Fatalf("HireEmployee failed: %v", err)
 	}
 
 	firedEmp, err := service.FireEmployee(emp.ID)
 	if err != nil {
-		t.Fatalf("failed to fire employee: %v", err)
+		t.Fatalf("FireEmployee failed: %v", err)
 	}
 	if firedEmp.ID != emp.ID {
 		t.Errorf("expected fired employee ID %d, got %d", emp.ID, firedEmp.ID)
 	}
 
-	// Verify that employee is no longer found.
-	foundEmp, err := mockRepo.FindByID(emp.ID)
-	if err == nil && foundEmp != nil {
+	// Verify the employee is removed.
+	removedEmp, err := mockRepo.FindByID(emp.ID)
+	if err == nil && removedEmp != nil {
 		t.Errorf("expected employee to be removed, but found one")
 	}
 }
 
-// TestFireEmployee_InvalidEmployeeID tests firing with an invalid employee ID.
 func TestFireEmployee_InvalidEmployeeID(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
@@ -156,7 +151,6 @@ func TestFireEmployee_InvalidEmployeeID(t *testing.T) {
 	}
 }
 
-// TestFireEmployee_EmployeeNotFound tests firing when the employee is not found.
 func TestFireEmployee_EmployeeNotFound(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
@@ -167,7 +161,6 @@ func TestFireEmployee_EmployeeNotFound(t *testing.T) {
 	}
 }
 
-// TestUpdateEmployee_Success verifies that updating an employee's info works.
 func TestUpdateEmployee_Success(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
@@ -183,7 +176,7 @@ func TestUpdateEmployee_Success(t *testing.T) {
 		t.Fatalf("UpdateEmployee failed: %v", err)
 	}
 	if updatedEmp.FirstName != "Jane" || updatedEmp.LastName != "Smith" {
-		t.Errorf("UpdateEmployee did not update name correctly: got %s %s", updatedEmp.FirstName, updatedEmp.LastName)
+		t.Errorf("UpdateEmployee did not update names correctly: got %s %s", updatedEmp.FirstName, updatedEmp.LastName)
 	}
 	if updatedEmp.Address != "456 New Ave" || updatedEmp.Phone != "555-5678" || updatedEmp.Email != "jane@example.com" {
 		t.Errorf("UpdateEmployee did not update contact info correctly")
@@ -193,7 +186,6 @@ func TestUpdateEmployee_Success(t *testing.T) {
 	}
 }
 
-// TestUpdateEmployee_EmployeeNotFound tests updating an employee that does not exist.
 func TestUpdateEmployee_EmployeeNotFound(t *testing.T) {
 	mockRepo := mocks.NewMockEmployeeRepository()
 	service := defaultServices.NewEmployeeService(mockRepo)
