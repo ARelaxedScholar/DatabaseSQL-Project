@@ -24,6 +24,14 @@ func NewMockEmployeeRepository() ports.EmployeeRepository {
 func (r *MockEmployeeRepository) Save(emp *models.Employee) (*models.Employee, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
+	// Check for duplicate email
+	for _, existingEmp := range r.employees {
+		if existingEmp.Email == emp.Email {
+			return nil, errors.New("duplicate email")
+		}
+	}
+
 	emp.ID = r.nextID
 	r.nextID++
 	r.employees[emp.ID] = emp
