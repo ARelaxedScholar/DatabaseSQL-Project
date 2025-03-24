@@ -9,9 +9,9 @@ import (
 )
 
 type MockHotelRepository struct {
-	mu      sync.Mutex
-	hotels  map[int]*models.Hotel
-	nextID  int
+	mu     sync.Mutex
+	hotels map[int]*models.Hotel
+	nextID int
 }
 
 func NewMockHotelRepository() ports.HotelRepository {
@@ -24,6 +24,12 @@ func NewMockHotelRepository() ports.HotelRepository {
 func (r *MockHotelRepository) Save(hotel *models.Hotel) (*models.Hotel, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	// Check for a duplicate hotel by name
+	for _, existingHotel := range r.hotels {
+		if existingHotel.Name == hotel.Name {
+			return nil, errors.New("duplicate hotel: a hotel with this name already exists")
+		}
+	}
 	hotel.ID = r.nextID
 	r.nextID++
 	r.hotels[hotel.ID] = hotel
