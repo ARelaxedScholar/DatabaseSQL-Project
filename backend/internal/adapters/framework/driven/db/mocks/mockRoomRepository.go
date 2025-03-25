@@ -10,14 +10,14 @@ import (
 )
 
 type MockRoomRepository struct {
-	mu    sync.Mutex
-	rooms map[int]*models.Room
+	mu     sync.Mutex
+	rooms  map[int]*models.Room
 	nextID int
 }
 
 func NewMockRoomRepository() ports.RoomRepository {
 	return &MockRoomRepository{
-		rooms: make(map[int]*models.Room),
+		rooms:  make(map[int]*models.Room),
 		nextID: 1,
 	}
 }
@@ -78,14 +78,31 @@ func (r *MockRoomRepository) FindAvailableRooms(hotelID int, startDate time.Time
 }
 
 func (r *MockRoomRepository) SearchRooms(startDate time.Time, endDate time.Time, capacity int, priceMin, priceMax float64, hotelChainID int, category string) ([]*models.Room, error) {
-	// For the purpose of the mock, we'll return all rooms that satisfy capacity and price constraints.
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	var results []*models.Room
 	for _, room := range r.rooms {
-		if room.Capacity >= capacity && room.Price >= priceMin && room.Price <= priceMax {
+		include := true
+
+		// For mock only check on price and capacity
+		// Price filter: Only apply if a non-zero min or max is provided.
+		if priceMin > 0 && room.Price < priceMin {
+			include = false
+		}
+		if priceMax > 0 && room.Price > priceMax {
+			include = false
+		}
+
+		// Capacity filter: Only apply if capacity is provided.
+		if capacity > 0 && room.Capacity < capacity {
+			include = false
+		}
+
+		if include {
 			results = append(results, room)
 		}
 	}
+
 	return results, nil
 }
