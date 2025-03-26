@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -52,7 +53,7 @@ func main() {
 			HotelID:   1,
 			Capacity:  2,
 			Price:     100.0 + float64(i*10),
-			Telephone: "123-456-789" + string(i),
+			Telephone: "123-456-789" + strconv.Itoa(i),
 		}
 		if _, err := roomRepo.Save(room); err != nil {
 			log.Fatalf("Failed to add room %d: %v", i, err)
