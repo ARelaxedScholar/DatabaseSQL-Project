@@ -1,6 +1,7 @@
 package main
 
 import (
+"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ import (
 	defaultEmployeeUseCases "github.com/sql-project-backend/internal/adapters/application/usecases/employeeUseCases/defaultEmployeeUseCases"
 	defaultServices "github.com/sql-project-backend/internal/adapters/domain/defaultServices"
 	"github.com/sql-project-backend/internal/adapters/domain/mockServices"
-	"github.com/sql-project-backend/internal/adapters/framework/driven/db/mocks"
+	myPostgreImpl "github.com/sql-project-backend/internal/adapters/framework/driven/db/sql"
 	"github.com/sql-project-backend/internal/adapters/framework/driving/rest"
 	"github.com/sql-project-backend/internal/models"
 )
@@ -33,18 +34,57 @@ func main() {
 	if secretKey == "" {
 		log.Fatal("JWT_SECRET_KEY is not set")
 	}
+	sql_url := os.Getenv("POSTGRES_CONNECTION_URI")
+	// Open database connection
+	db, err := sql.Open("postgres", sql_url)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer db.Close() // Important!
 
+	// Verify connection works
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("Failed to ping database: %v", err)
+	}
+
+	log.Println("Successfully connected to PostgreSQL")
 	// Instantiate a robust JWT token service.
 	tokenService := jwtimpl.NewJwtTokenService(secretKey, 24*time.Hour)
 
 	// Instantiate mock repositories.
-	clientRepo := mocks.NewMockClientRepository()
-	employeeRepo := mocks.NewMockEmployeeRepository()
-	hotelRepo := mocks.NewMockHotelRepository()
-	hotelChainRepo := mocks.NewMockHotelChainRepository()
-	roomRepo := mocks.NewMockRoomRepository()
-	reservationRepo := mocks.NewMockReservationRepository()
-	stayRepo := mocks.NewMockStayRepository()
+	clientRepo, err := myPostgreImpl.NewPostgresClientRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize client repo: %v", err)
+	}
+	employeeRepo, err := myPostgreImpl.NewPostgresEmployeeRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize employee repo: %v", err)
+	}
+	hotelRepo, err := myPostgreImpl.NewPostgresHotelRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize hotel repo: %v", err)
+	}
+	hotelChainRepo, err := myPostgreImpl.NewPostgresHotelChainRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize hotel chain repo: %v", err)
+	}
+	roomRepo, err := myPostgreImpl.NewPostgresRoomRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize room repo: %v", err)
+	}
+	reservationRepo, err := myPostgreImpl.NewPostgresReservationRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize reservation repo: %v", err)
+	}
+	stayRepo, err := myPostgreImpl.NewPostgresStayRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize stay repo: %v", err)
+	}
+	queryRepo, err := myPostgreImpl.NewPostgresQueryRepository(db)
+	if err == nil {
+		log.Fatalf("Failed to initialize query repo: %v", err)
+	}
 
 	// Adding multiple rooms to your mock repo for testing.
 	for i := 1; i <= 5; i++ {
