@@ -53,7 +53,7 @@ func (h *AnonymousHandler) SearchRooms(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid hotelChainID: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	category := q.Get("category")
+	roomType := q.Get("roomType")
 
 	input := dto.RoomSearchInput{
 		StartDate:    startDate,
@@ -62,7 +62,7 @@ func (h *AnonymousHandler) SearchRooms(w http.ResponseWriter, r *http.Request) {
 		PriceMin:     priceMin,
 		PriceMax:     priceMax,
 		HotelChainID: hotelChainID,
-		Category:     category,
+		RoomType:     roomType,
 	}
 
 	output, err := h.SearchRoomsUseCase.SearchRooms(input)

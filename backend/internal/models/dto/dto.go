@@ -183,7 +183,7 @@ type RoomSearchInput struct {
 	PriceMin     float64   `json:"priceMin"`
 	PriceMax     float64   `json:"priceMax"`
 	HotelChainID int       `json:"hotelChainId"`
-	Category     string    `json:"category"`
+	RoomType     string    `json:"roomType"`
 }
 
 type RoomSearchOutput struct {
@@ -194,7 +194,8 @@ type RoomOutput struct {
 	RoomID       int      `json:"roomId"`
 	HotelID      int      `json:"hotelId"`
 	Capacity     int      `json:"capacity"`
-	Floor        int      `json:"floor"`
+	Number       string   `json:"number"`
+	Floor        string   `json:"floor"`
 	Price        float64  `json:"price"`
 	Telephone    string   `json:"telephone"`
 	ViewTypes    []string `json:"viewTypes"`
@@ -212,6 +213,7 @@ type HotelInput struct {
 	NumberOfRooms int    `json:"numberOfRooms"`
 	Name          string `json:"name"`
 	Address       string `json:"address"`
+	City          string `json:"city"`
 	Email         string `json:"email"`
 	Phone         string `json:"phone"`
 }
@@ -233,32 +235,38 @@ type HotelChainOutput struct {
 	ChainID int `json:"chainId"`
 }
 
+// RoomInput is used for creating a new room.
 type RoomInput struct {
-	ID           int      `json:"id"`
+	ID           int      `json:"id"` // Usually ignored/0 for create, set by DB
 	HotelID      int      `json:"hotelId"`
 	Capacity     int      `json:"capacity"`
-	Floor        int      `json:"floor"`
+	Number       string   `json:"number"`
+	Floor        string   `json:"floor"`
+	SurfaceArea  float64  `json:"surfaceArea"`
 	Price        float64  `json:"price"`
 	Telephone    string   `json:"telephone"`
-	ViewTypes    []string `json:"viewTypes"`
-	RoomType     string   `json:"roomType"`
-	IsExtensible bool     `json:"isExtensible"`
-	Amenities    []string `json:"amenities"`
-	Problems     []string `json:"problems"`
-}
-
-type RoomUpdateInput struct {
-	ID           int      `json:"id"`
-	HotelID      int      `json:"hotelId,omitempty"`
-	Capacity     int      `json:"capacity,omitempty"`
-	Floor        int      `json:"floor,omitempty"`
-	Price        float64  `json:"price,omitempty"`
-	Telephone    string   `json:"telephone,omitempty"`
 	ViewTypes    []string `json:"viewTypes,omitempty"`
-	RoomType     string   `json:"roomType,omitempty"`
-	IsExtensible bool     `json:"isExtensible,omitempty"`
+	RoomType     string   `json:"roomType"`
+	IsExtensible bool     `json:"isExtensible"` // Defaults to false if omitted
 	Amenities    []string `json:"amenities,omitempty"`
 	Problems     []string `json:"problems,omitempty"`
+}
+
+// RoomUpdateInput is used for updating an existing room.
+type RoomUpdateInput struct {
+	ID           int       `json:"id"`
+	HotelID      *int      `json:"hotelId,omitempty"`
+	Capacity     *int      `json:"capacity,omitempty"`
+	Number       *string   `json:"number,omitempty"`
+	Floor        *string   `json:"floor,omitempty"`
+	SurfaceArea  *float64  `json:"surfaceArea,omitempty"`
+	Price        *float64  `json:"price,omitempty"`
+	Telephone    *string   `json:"telephone,omitempty"`
+	ViewTypes    *[]string `json:"viewTypes,omitempty"`
+	RoomType     *string   `json:"roomType,omitempty"`
+	IsExtensible *bool     `json:"isExtensible,omitempty"`
+	Amenities    *[]string `json:"amenities,omitempty"`
+	Problems     *[]string `json:"problems,omitempty"`
 }
 
 type RoomOutputAdmin struct {

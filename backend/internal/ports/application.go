@@ -140,7 +140,7 @@ type RoomRepository interface {
 	Update(room *models.Room) error
 	Delete(id int) error
 	FindAvailableRooms(hotelID int, startDate time.Time, endDate time.Time) ([]*models.Room, error)
-	SearchRooms(startDate time.Time, endDate time.Time, capacity int, priceMin, priceMax float64, hotelChainID int, category string) ([]*models.Room, error)
+	SearchRooms(startDate time.Time, endDate time.Time, capacity int, priceMin, priceMax float64, hotelChainID int, roomType models.RoomType) ([]*models.Room, error)
 }
 
 type ReservationRepository interface {
