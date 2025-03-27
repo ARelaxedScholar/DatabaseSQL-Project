@@ -1,7 +1,7 @@
 package main
 
 import (
-"database/sql"
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -116,7 +116,7 @@ func main() {
 	profileUseCase := defaultClientUseCases.NewClientProfileManagementUseCase(clientService, clientRepo)
 	makeReservationUseCase := defaultClientUseCases.NewClientMakeReservationUseCase(reservationService)
 	resManagementUseCase := defaultClientUseCases.NewClientReservationsManagementUseCase(reservationService)
-	searchRoomsUseCase := defaultAnonymousUseCases.NewSearchRoomsUseCase(roomRepo)
+	searchRoomsUseCase := defaultAnonymousUseCases.NewSearchRoomsUseCase(roomRepo, queryRepo)
 
 	employeeLoginUseCase := defaultEmployeeUseCases.NewEmployeeLoginUseCase(employeeRepo, tokenService)
 	checkInUseCase := defaultEmployeeUseCases.NewEmployeeCheckInUseCase(stayService, reservationRepo, roomRepo)
@@ -178,6 +178,8 @@ func main() {
 
 	// Anonymous route.
 	router.HandleFunc("/search/rooms", anonymousHandler.SearchRooms).Methods("GET")
+	router.HandleFunc("/search/hotels/{hotelID:[0-9]+}/room-count", anonymousHandler.CountRoomsInHotel).Methods("GET")
+	router.HandleFunc("/search/zones/rooms", anonymousHandler.GetRoomsByZone).Methods("GET")
 
 	log.Println("Server is running on port :8080")
 	log.Fatal(http.ListenAndServe(":8080", router))

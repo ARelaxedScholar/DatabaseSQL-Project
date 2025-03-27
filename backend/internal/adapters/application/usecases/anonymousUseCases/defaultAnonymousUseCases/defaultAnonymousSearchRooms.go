@@ -9,12 +9,14 @@ import (
 )
 
 type DefaultSearchRoomsUseCase struct {
-	roomRepo ports.RoomRepository
+	roomRepo  ports.RoomRepository
+	queryRepo ports.QueryRepository
 }
 
-func NewSearchRoomsUseCase(roomRepo ports.RoomRepository) ports.SearchRoomsUseCase {
+func NewSearchRoomsUseCase(roomRepo ports.RoomRepository, queryRepo ports.QueryRepository) ports.SearchRoomsUseCase {
 	return &DefaultSearchRoomsUseCase{
-		roomRepo: roomRepo,
+		roomRepo:  roomRepo,
+		queryRepo: queryRepo,
 	}
 }
 
@@ -74,4 +76,13 @@ func (uc *DefaultSearchRoomsUseCase) SearchRooms(input dto.RoomSearchInput) (dto
 	}
 
 	return dto.RoomSearchOutput{Rooms: roomOutputs}, nil
+}
+
+// implemented the 
+func (s DefaultSearchRoomsUseCase) GetNumberOfRoomsForHotel(hotelID int) (int, error) {
+	return s.queryRepo.GetHotelRoomCapacity(hotelID)
+}
+
+func (s DefaultSearchRoomsUseCase) GetNumberOfRoomsPerZone() (map[string]int, error) {
+	return s.queryRepo.GetAvailableRoomsByZone()
 }

@@ -64,6 +64,8 @@ type EmployeeCreateNewStayUseCase interface {
 // ## Anonymous
 type SearchRoomsUseCase interface {
 	SearchRooms(input dto.RoomSearchInput) (dto.RoomSearchOutput, error)
+	GetNumberOfRoomsForHotel(hotelID int) (int, error)
+	GetNumberOfRoomsPerZone()  (map[string]int, error)  // Zone == City
 }
 
 // ## Admin USE CASES (Right now no requirement for that so kind of an after thought)

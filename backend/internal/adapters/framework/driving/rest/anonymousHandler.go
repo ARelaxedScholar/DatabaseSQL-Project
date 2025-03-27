@@ -2,10 +2,12 @@ package rest
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/sql-project-backend/internal/models/dto"
 	"github.com/sql-project-backend/internal/ports"
 )
@@ -17,6 +19,46 @@ type AnonymousHandler struct {
 func NewAnonymousHandler(searchRoomsUseCase ports.SearchRoomsUseCase) *AnonymousHandler {
 	return &AnonymousHandler{
 		SearchRoomsUseCase: searchRoomsUseCase,
+	}
+}
+
+// New additions from the Query repo.
+func (h *AnonymousHandler) CountRoomsInHotel(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr, ok := vars["hotelID"]
+	if !ok {
+		http.Error(w, "Missing hotel ID", http.StatusBadRequest)
+		return
+	}
+
+	hotelID, err := strconv.Atoi(idStr)
+	if err != nil || hotelID <= 0 {
+		http.Error(w, "Invalid hotel ID: must be a positive integer", http.StatusBadRequest)
+		return
+	}
+
+	count, err := h.SearchRoomsUseCase.GetNumberOfRoomsForHotel(hotelID)
+	if err != nil {
+		log.Printf("Error counting rooms for hotel %d: %v", hotelID, err) // Log internally
+		http.Error(w, "Could not fetch room count", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]int{"count": count})
+}
+
+func (h *AnonymousHandler) GetRoomsByZone(w http.ResponseWriter, r *http.Request) {
+	output, err := h.SearchRoomsUseCase.GetNumberOfRoomsPerZone()
+	if err != nil {
+		log.Printf("Error fetching rooms by zone: %v", err) // Log internally
+		http.Error(w, "Could not fetch rooms by zone", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(output); err != nil {
+		log.Printf("Failed to encode response: %v", err)
 	}
 }
 
