@@ -17,8 +17,8 @@ func NewHotelService(repo ports.HotelRepository) ports.HotelService {
 	}
 }
 
-func (s *DefaultHotelService) AddHotel(id, chainId, rating, numberOfRooms int, name, address, email, phone string) (*models.Hotel, error) {
-	hotel, err := models.NewHotel(id, chainId, rating, numberOfRooms, name, address, email, phone)
+func (s *DefaultHotelService) AddHotel(id, chainId, rating, numberOfRooms int, name, address, city, email, phone string) (*models.Hotel, error) {
+	hotel, err := models.NewHotel(id, chainId, rating, numberOfRooms, name, address, city, email, phone)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (s *DefaultHotelService) AddHotel(id, chainId, rating, numberOfRooms int, n
 	return dbHotel, nil
 }
 
-func (s *DefaultHotelService) UpdateHotel(id, chainId, rating, numberOfRooms int, name, address, email, phone string) (*models.Hotel, error) {
+func (s *DefaultHotelService) UpdateHotel(id, chainId, rating, numberOfRooms int, name, address, city, email, phone string) (*models.Hotel, error) {
 	hotel, err := s.hotelRepo.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (s *DefaultHotelService) UpdateHotel(id, chainId, rating, numberOfRooms int
 	if hotel == nil {
 		return nil, errors.New("Hotel not found.")
 	}
-	hotel, err = models.NewHotel(id, chainId, rating, numberOfRooms, name, address, email, phone)
+	hotel, err = models.NewHotel(id, chainId, rating, numberOfRooms, name, address, city, email, phone)
 	if err != nil {
 		return nil, err
 	}

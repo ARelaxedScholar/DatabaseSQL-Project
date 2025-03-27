@@ -23,6 +23,7 @@ func (uc *DefaultAdminHotelManagementUseCase) AddHotel(input dto.HotelInput) (dt
 		input.NumberOfRooms,
 		input.Name,
 		input.Address,
+		input.City,
 		input.Email,
 		input.Phone,
 	)
@@ -33,6 +34,7 @@ func (uc *DefaultAdminHotelManagementUseCase) AddHotel(input dto.HotelInput) (dt
 }
 
 func (uc *DefaultAdminHotelManagementUseCase) UpdateHotel(input dto.HotelInput) (dto.HotelOutput, error) {
+
 	hotel, err := uc.hotelService.UpdateHotel(
 		input.ID,
 		input.ChainID,
@@ -40,6 +42,7 @@ func (uc *DefaultAdminHotelManagementUseCase) UpdateHotel(input dto.HotelInput) 
 		input.NumberOfRooms,
 		input.Name,
 		input.Address,
+		input.City,
 		input.Email,
 		input.Phone,
 	)

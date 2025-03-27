@@ -13,7 +13,7 @@ func TestAddHotel_Success(t *testing.T) {
 	service := defaultServices.NewHotelService(mockRepo)
 
 	// Call AddHotel with valid input.
-	hotel, err := service.AddHotel(0, 1, 4, 100, "The Unique Hotel", "123 Main St", "info@uniquehotel.com", "555-0101")
+	hotel, err := service.AddHotel(0, 1, 4, 100, "The Unique Hotel", "123 Main St", "Foobar City", "info@uniquehotel.com", "555-0101")
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
@@ -30,13 +30,13 @@ func TestAddHotel_Duplicate(t *testing.T) {
 	service := defaultServices.NewHotelService(mockRepo)
 
 	// First hotel should be saved without error.
-	_, err := service.AddHotel(0, 1, 4, 100, "Duplicate Hotel", "123 Main St", "info@dup.com", "555-0101")
+	_, err := service.AddHotel(0, 1, 4, 100, "Duplicate Hotel", "123 Main St", "Foobar City", "info@dup.com", "555-0101")
 	if err != nil {
 		t.Fatalf("expected no error on first add, got: %v", err)
 	}
 
 	// Second attempt with the same hotel name should fail.
-	_, err = service.AddHotel(0, 1, 5, 150, "Duplicate Hotel", "456 Other Ave", "contact@dup.com", "555-0202")
+	_, err = service.AddHotel(0, 1, 5, 150, "Duplicate Hotel", "456 Other Ave", "Foobar City", "contact@dup.com", "555-0202")
 	if err == nil {
 		t.Fatal("expected error for duplicate hotel name, got nil")
 	}
@@ -50,13 +50,13 @@ func TestUpdateHotel_Success(t *testing.T) {
 	service := defaultServices.NewHotelService(mockRepo)
 
 	// First add a hotel.
-	origHotel, err := service.AddHotel(0, 1, 4, 100, "Original Hotel", "123 Main St", "info@orig.com", "555-0101")
+	origHotel, err := service.AddHotel(0, 1, 4, 100, "Original Hotel", "123 Main St", "Foobar City", "info@orig.com", "555-0101")
 	if err != nil {
 		t.Fatalf("failed to add hotel: %v", err)
 	}
 
 	// Update the hotel with new values.
-	updatedHotel, err := service.UpdateHotel(origHotel.ID, 2, 5, 200, "Updated Hotel", "456 New Ave", "contact@upd.com", "555-0202")
+	updatedHotel, err := service.UpdateHotel(origHotel.ID, 2, 5, 200, "Updated Hotel", "456 New Ave", "Foobar City", "contact@upd.com", "555-0202")
 	if err != nil {
 		t.Fatalf("expected update to succeed, got error: %v", err)
 	}
@@ -73,7 +73,7 @@ func TestUpdateHotel_NotFound(t *testing.T) {
 	service := defaultServices.NewHotelService(mockRepo)
 
 	// Attempt to update a hotel that doesn't exist.
-	_, err := service.UpdateHotel(999, 1, 4, 100, "Nonexistent Hotel", "123 Main St", "info@none.com", "555-0101")
+	_, err := service.UpdateHotel(999, 1, 4, 100, "Nonexistent Hotel", "123 Main St", "Foobar City", "info@none.com", "555-0101")
 	if err == nil {
 		t.Fatal("expected error for non-existent hotel, got nil")
 	}
@@ -84,7 +84,7 @@ func TestDeleteHotel_Success(t *testing.T) {
 	service := defaultServices.NewHotelService(mockRepo)
 
 	// Add a hotel.
-	hotel, err := service.AddHotel(0, 1, 4, 100, "Hotel to Delete", "123 Main St", "delete@hotel.com", "555-0101")
+	hotel, err := service.AddHotel(0, 1, 4, 100, "Hotel to Delete", "123 Main St", "Foobar City", "delete@hotel.com", "555-0101")
 	if err != nil {
 		t.Fatalf("failed to add hotel: %v", err)
 	}

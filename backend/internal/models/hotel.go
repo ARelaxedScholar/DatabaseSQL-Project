@@ -5,12 +5,12 @@ import (
 )
 
 type Hotel struct {
-	ID, ChainID, Rating, NumberOfRooms int
-	Name, Address, Email, Telephone    string
+	ID, ChainID, Rating, NumberOfRooms    int
+	Name, Address, City, Email, Telephone string
 }
 
 func NewHotel(id, chainId, rating, numberOfRooms int,
-	name, address, email, telephone string) (*Hotel, error) {
+	name, address, city, email, telephone string) (*Hotel, error) {
 	var err error
 	// Validate Fields
 	switch {
@@ -28,6 +28,8 @@ func NewHotel(id, chainId, rating, numberOfRooms int,
 		err = errors.New("Hotel's name cannot be empty")
 	case address == "":
 		err = errors.New("Hotel's address cannot be empty")
+	case city == "":
+		err = errors.New("Hotel's city (zone) cannot be empty")
 	case email == "":
 		err = errors.New("Hotel's email cannot be empty")
 	case telephone == "":
@@ -47,6 +49,7 @@ func NewHotel(id, chainId, rating, numberOfRooms int,
 		NumberOfRooms: numberOfRooms,
 		Name:          name,
 		Address:       address,
+		City:          city,
 		Email:         email,
 		Telephone:     telephone,
 	}, nil
