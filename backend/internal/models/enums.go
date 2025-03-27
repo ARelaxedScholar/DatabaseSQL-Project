@@ -255,6 +255,22 @@ func (self ReservationStatus) String() string {
 	}
 }
 
+func ParseReservationStatus(s string) (ReservationStatus, error) {
+	normalized := strings.ToLower(strings.TrimSpace(s))
+	switch normalized {
+	case "confirmed":
+		return Confirmed, nil
+	case "waiting":
+		return Waiting, nil
+	case "cancelled":
+		return Cancelled, nil
+	case "finished":
+		return Finished, nil
+	default:
+		return 0, errors.New("Invalid reservation status string: " + s)
+	}
+}
+
 // ### VIEW TYPE SECTION
 // View Enum
 type ViewType int
