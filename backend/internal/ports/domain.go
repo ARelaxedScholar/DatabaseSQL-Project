@@ -6,7 +6,6 @@ import (
 	"github.com/sql-project-backend/internal/models"
 )
 
-
 // This is where we declare the core functionalities
 // we want for the app. So you can read this to know what the app does (is supposed to do) ;)
 type EmployeeService interface {
@@ -29,16 +28,16 @@ type HotelChainService interface {
 }
 
 type HotelService interface {
-	AddHotel(id, chainId, rating, numberOfRooms int, name, address, email, phone string) (*models.Hotel, error)
-	UpdateHotel(id, chainId, rating, numberOfRooms int, name, address, email, phone string) (*models.Hotel, error)
+	AddHotel(id, chainId, rating, numberOfRooms int, name, address, city, email, phone string) (*models.Hotel, error)
+	UpdateHotel(id, chainId, rating, numberOfRooms int, name, address, city, email, phone string) (*models.Hotel, error)
 	DeleteHotel(id int) error
 }
 
 type RoomService interface {
-	AddRoom(id, hotelId, capacity, floor int, price float64, phone string,
+	AddRoom(id, hotelId, capacity int, number, floor string, surfaceArea, price float64, telephone string,
 		viewTypes map[models.ViewType]struct{}, roomType models.RoomType, isExtensible bool,
 		amenities map[models.Amenity]struct{}, problems []models.Problem) (*models.Room, error)
-	UpdateRoom(id, hotelId, capacity, floor int, price float64, phone string,
+	UpdateRoom(id, hotelId, capacity int, number, floor string, surfaceArea, price float64, telephone string,
 		viewTypes map[models.ViewType]struct{}, roomType models.RoomType, isExtensible bool,
 		amenities map[models.Amenity]struct{}, problems []models.Problem) (*models.Room, error)
 	DeleteRoom(id int) error

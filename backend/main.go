@@ -85,7 +85,7 @@ func main() {
 
 	adminHotelManagementUseCase := defaultAdminUseCases.NewAdminHotelManagementUseCase(hotelService)
 	adminHotelChainUseCase := defaultAdminUseCases.NewAdminHotelChainManagementUseCase(hotelChainService)
-	adminRoomManagementUseCase := defaultAdminUseCases.NewAdminRoomManagementUseCase(roomService)
+	adminRoomManagementUseCase := defaultAdminUseCases.NewAdminRoomManagementUseCase(roomService, roomRepo)
 	adminAccountManagementUseCase := defaultAdminUseCases.NewAdminAccountManagementUseCase(clientRepo, employeeRepo, clientService, employeeService)
 
 	// Instantiate REST handlers.

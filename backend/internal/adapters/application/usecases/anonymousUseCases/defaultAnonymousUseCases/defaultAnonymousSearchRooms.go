@@ -1,6 +1,9 @@
 package defaultAnonymousUseCases
 
 import (
+	"fmt"
+
+	"github.com/sql-project-backend/internal/models"
 	"github.com/sql-project-backend/internal/models/dto"
 	"github.com/sql-project-backend/internal/ports"
 )
@@ -16,6 +19,16 @@ func NewSearchRoomsUseCase(roomRepo ports.RoomRepository) ports.SearchRoomsUseCa
 }
 
 func (uc *DefaultSearchRoomsUseCase) SearchRooms(input dto.RoomSearchInput) (dto.RoomSearchOutput, error) {
+	// parse the potentially empty room type
+	var searchRoomType models.RoomType
+	var err error
+	if input.RoomType != "" { // Only parse if a category is provided
+		searchRoomType, err = models.ParseRoomType(input.RoomType)
+		if err != nil {
+			return dto.RoomSearchOutput{}, fmt.Errorf("Invalid room category provided for search: %w", err)
+		}
+	}
+
 	rooms, err := uc.roomRepo.SearchRooms(
 		input.StartDate,
 		input.EndDate,
@@ -23,22 +36,24 @@ func (uc *DefaultSearchRoomsUseCase) SearchRooms(input dto.RoomSearchInput) (dto
 		input.PriceMin,
 		input.PriceMax,
 		input.HotelChainID,
-		input.Category,
+		searchRoomType, // Pass the parsed RoomType enum value
 	)
 	if err != nil {
 		return dto.RoomSearchOutput{}, err
 	}
 
-	var roomOutputs []dto.RoomOutput
+	roomOutputs := make([]dto.RoomOutput, 0, len(rooms))
 	for _, room := range rooms {
-		// Convert the view types from map[ViewType]struct{} to []string.
-		var viewTypes []string
+		if room == nil {
+			continue
+		}
+
+		viewTypes := make([]string, 0, len(room.ViewTypes))
 		for vt := range room.ViewTypes {
 			viewTypes = append(viewTypes, vt.String())
 		}
 
-		// Convert the amenities from map[Amenity]struct{} to []string.
-		var amenities []string
+		amenities := make([]string, 0, len(room.Amenities))
 		for a := range room.Amenities {
 			amenities = append(amenities, a.String())
 		}
@@ -47,6 +62,7 @@ func (uc *DefaultSearchRoomsUseCase) SearchRooms(input dto.RoomSearchInput) (dto
 			RoomID:       room.ID,
 			HotelID:      room.HotelID,
 			Capacity:     room.Capacity,
+			Number:       room.Number,
 			Floor:        room.Floor,
 			Price:        room.Price,
 			Telephone:    room.Telephone,
