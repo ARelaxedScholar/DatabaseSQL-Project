@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	"github.com/sql-project-backend/internal/adapters/application/jwtimpl"
 	defaultAdminUseCases "github.com/sql-project-backend/internal/adapters/application/usecases/adminUseCases/defaultAdminUseCases"
 	defaultAnonymousUseCases "github.com/sql-project-backend/internal/adapters/application/usecases/anonymousUseCases/defaultAnonymousUseCases"
@@ -23,7 +22,7 @@ import (
 )
 
 func main() {
-	
+
 	// Get the JWT secret key from environment variables
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	if secretKey == "" {
