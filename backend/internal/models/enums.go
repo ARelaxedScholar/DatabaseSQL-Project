@@ -143,6 +143,38 @@ func (self ProblemSeverity) isValid() bool {
 	}
 }
 
+func ParseProblemSeverity(s string) (ProblemSeverity, error) {
+	normalized := strings.ToLower(strings.TrimSpace(s))
+	switch normalized {
+	case "minor":
+		return Minor, nil
+	case "moderate":
+		return Moderate, nil
+	case "major":
+		return Major, nil
+	case "critical":
+		return Critical, nil
+	default:
+		return 0, errors.New("Invalid problem severity string: " + s)
+	}
+}
+
+func (ps ProblemSeverity) String() string {
+	switch ps {
+	case Minor:
+		return "Minor"
+	case Moderate:
+		return "Moderate"
+	case Major:
+		return "Major"
+	case Critical:
+		return "Critical"
+	default:
+		// Consistent with other enums, return an "invalid" indicator
+		return "Invalid Severity"
+	}
+}
+
 // ### ROOM TYPE SECTION
 // RoomType
 type RoomType int
