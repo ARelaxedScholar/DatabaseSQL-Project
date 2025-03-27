@@ -23,12 +23,7 @@ import (
 )
 
 func main() {
-	// Load environment variables from .env (for local development)
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("Warning: No .env file found")
-	}
-
+	
 	// Get the JWT secret key from environment variables
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	if secretKey == "" {
@@ -54,35 +49,35 @@ func main() {
 
 	// Instantiate mock repositories.
 	clientRepo, err := myPostgreImpl.NewPostgresClientRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize client repo: %v", err)
 	}
 	employeeRepo, err := myPostgreImpl.NewPostgresEmployeeRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize employee repo: %v", err)
 	}
 	hotelRepo, err := myPostgreImpl.NewPostgresHotelRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize hotel repo: %v", err)
 	}
 	hotelChainRepo, err := myPostgreImpl.NewPostgresHotelChainRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize hotel chain repo: %v", err)
 	}
 	roomRepo, err := myPostgreImpl.NewPostgresRoomRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize room repo: %v", err)
 	}
 	reservationRepo, err := myPostgreImpl.NewPostgresReservationRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize reservation repo: %v", err)
 	}
 	stayRepo, err := myPostgreImpl.NewPostgresStayRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize stay repo: %v", err)
 	}
 	queryRepo, err := myPostgreImpl.NewPostgresQueryRepository(db)
-	if err == nil {
+	if err != nil {
 		log.Fatalf("Failed to initialize query repo: %v", err)
 	}
 
