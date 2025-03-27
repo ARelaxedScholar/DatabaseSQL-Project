@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -18,7 +17,6 @@ import (
 	"github.com/sql-project-backend/internal/adapters/domain/mockServices"
 	myPostgreImpl "github.com/sql-project-backend/internal/adapters/framework/driven/db/sql"
 	"github.com/sql-project-backend/internal/adapters/framework/driving/rest"
-	"github.com/sql-project-backend/internal/models"
 )
 
 func main() {
@@ -78,20 +76,6 @@ func main() {
 	queryRepo, err := myPostgreImpl.NewPostgresQueryRepository(db)
 	if err != nil {
 		log.Fatalf("Failed to initialize query repo: %v", err)
-	}
-
-	// Adding multiple rooms to your mock repo for testing.
-	for i := 1; i <= 5; i++ {
-		room := &models.Room{
-			ID:        i,
-			HotelID:   1,
-			Capacity:  2,
-			Price:     100.0 + float64(i*10),
-			Telephone: "123-456-789" + strconv.Itoa(i),
-		}
-		if _, err := roomRepo.Save(room); err != nil {
-			log.Fatalf("Failed to add room %d: %v", i, err)
-		}
 	}
 
 	// Instantiate domain services using the repositories.
