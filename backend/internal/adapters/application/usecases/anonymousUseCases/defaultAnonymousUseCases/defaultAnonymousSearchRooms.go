@@ -2,6 +2,7 @@ package defaultAnonymousUseCases
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/sql-project-backend/internal/models"
 	"github.com/sql-project-backend/internal/models/dto"
@@ -21,24 +22,71 @@ func NewSearchRoomsUseCase(roomRepo ports.RoomRepository, queryRepo ports.QueryR
 }
 
 func (uc *DefaultSearchRoomsUseCase) SearchRooms(input dto.RoomSearchInput) (dto.RoomSearchOutput, error) {
-	// parse the potentially empty room type
 	var searchRoomType models.RoomType
 	var err error
-	if input.RoomType != "" { // Only parse if a category is provided
-		searchRoomType, err = models.ParseRoomType(input.RoomType)
+	// Only parse RoomType if provided (non-nil and non-empty)
+	if input.RoomType != nil && *input.RoomType != "" {
+		searchRoomType, err = models.ParseRoomType(*input.RoomType)
 		if err != nil {
 			return dto.RoomSearchOutput{}, fmt.Errorf("Invalid room category provided for search: %w", err)
 		}
 	}
 
+	// Convert pointer fields to concrete values (or use zero values)
+	var (
+		startDate    time.Time
+		endDate      time.Time
+		capacity     int
+		priceMin     float64
+		priceMax     float64
+		hotelChainID int
+	)
+
+	if input.StartDate != nil {
+		startDate = *input.StartDate
+	} else {
+		startDate = time.Time{}
+	}
+
+	if input.EndDate != nil {
+		endDate = *input.EndDate
+	} else {
+		endDate = time.Time{}
+	}
+
+	if input.Capacity != nil {
+		capacity = *input.Capacity
+	} else {
+		capacity = 0
+	}
+
+	if input.PriceMin != nil {
+		priceMin = *input.PriceMin
+	} else {
+		priceMin = 0.0
+	}
+
+	if input.PriceMax != nil {
+		priceMax = *input.PriceMax
+	} else {
+		priceMax = 0.0
+	}
+
+	if input.HotelChainID != nil {
+		hotelChainID = *input.HotelChainID
+	} else {
+		hotelChainID = 0
+	}
+
+	// Call the repository using the concrete values.
 	rooms, err := uc.roomRepo.SearchRooms(
-		input.StartDate,
-		input.EndDate,
-		input.Capacity,
-		input.PriceMin,
-		input.PriceMax,
-		input.HotelChainID,
-		searchRoomType, // Pass the parsed RoomType enum value
+		startDate,      // time.Time
+		endDate,        // time.Time
+		capacity,       // int
+		priceMin,       // float64
+		priceMax,       // float64
+		hotelChainID,   // int
+		searchRoomType, // models.RoomType (zero value if no RoomType provided)
 	)
 	if err != nil {
 		return dto.RoomSearchOutput{}, err
@@ -78,7 +126,7 @@ func (uc *DefaultSearchRoomsUseCase) SearchRooms(input dto.RoomSearchInput) (dto
 	return dto.RoomSearchOutput{Rooms: roomOutputs}, nil
 }
 
-// implemented the 
+// implemented the
 func (s DefaultSearchRoomsUseCase) GetNumberOfRoomsForHotel(hotelID int) (int, error) {
 	return s.queryRepo.GetHotelRoomCapacity(hotelID)
 }

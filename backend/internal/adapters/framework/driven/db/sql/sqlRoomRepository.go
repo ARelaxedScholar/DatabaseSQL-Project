@@ -456,7 +456,9 @@ func (r *PostgresRoomRepository) SearchRooms(startDate time.Time, endDate time.T
 	var queryFilter strings.Builder
 	args := []interface{}{}
 	argID := 1
+
 	queryFilter.WriteString(" WHERE 1=1 ")
+
 	if hotelChainID > 0 {
 		queryFilter.WriteString(fmt.Sprintf("AND h.hotel_chain_id = $%d ", argID))
 		args = append(args, hotelChainID)
@@ -472,7 +474,7 @@ func (r *PostgresRoomRepository) SearchRooms(startDate time.Time, endDate time.T
 		args = append(args, priceMin)
 		argID++
 	}
-	if priceMax > 0 {
+	if priceMax > priceMin {
 		queryFilter.WriteString(fmt.Sprintf("AND r.price <= $%d ", argID))
 		args = append(args, priceMax)
 		argID++
@@ -486,21 +488,43 @@ func (r *PostgresRoomRepository) SearchRooms(startDate time.Time, endDate time.T
 		args = append(args, rtName)
 		argID++
 	}
-	endDateArgIdx := argID
-	argID++
-	args = append(args, endDate)
-	startDateArgIdx := argID
-	argID++
-	args = append(args, startDate)
-	queryIDs := fmt.Sprintf(` SELECT r.id FROM room r JOIN room_type rt ON r.room_type_id = rt.id JOIN hotel h ON r.hotel_id = h.id %s
-          AND NOT EXISTS ( SELECT 1 FROM reservation res WHERE res.room_id = r.id AND res.status != 'Cancelled' AND res.start_date < $%d AND res.end_date > $%d )
-          AND NOT EXISTS ( SELECT 1 FROM stay s WHERE s.room_id = r.id AND s.arrival_date < $%d AND s.departure_date > $%d )
-        ORDER BY r.price, r.id `, queryFilter.String(), endDateArgIdx, startDateArgIdx, endDateArgIdx, startDateArgIdx)
+	// Only add date availability filtering if both dates are provided.
+	if !startDate.IsZero() && !endDate.IsZero() {
+		// Append endDate and startDate as parameters.
+		endDateArgIdx := argID
+		args = append(args, endDate)
+		argID++
+		startDateArgIdx := argID
+		args = append(args, startDate)
+		argID++
+
+		// Add conditions to exclude rooms with overlapping reservations
+		queryFilter.WriteString(fmt.Sprintf(
+			"AND NOT EXISTS ( SELECT 1 FROM reservation res WHERE res.room_id = r.id AND res.status != 'Cancelled' AND res.start_date < $%d AND res.end_date > $%d ) ",
+			endDateArgIdx, startDateArgIdx,
+		))
+		// Add conditions to exclude rooms with overlapping stays
+		queryFilter.WriteString(fmt.Sprintf(
+			"AND NOT EXISTS ( SELECT 1 FROM stay s WHERE s.room_id = r.id AND s.arrival_date < $%d AND s.departure_date > $%d ) ",
+			endDateArgIdx, startDateArgIdx,
+		))
+	}
+
+	queryIDs := fmt.Sprintf(`
+        SELECT r.id 
+        FROM room r 
+        JOIN room_type rt ON r.room_type_id = rt.id 
+        JOIN hotel h ON r.hotel_id = h.id 
+        %s
+        ORDER BY r.price, r.id
+    `, queryFilter.String())
+
 	rowsIDs, err := r.db.Query(queryIDs, args...)
 	if err != nil {
 		return nil, handlePqError(fmt.Errorf("Failed to query searched room IDs: %w", err))
 	}
 	defer rowsIDs.Close()
+
 	var availableRoomIDs []int
 	for rowsIDs.Next() {
 		var id int
@@ -514,3 +538,4 @@ func (r *PostgresRoomRepository) SearchRooms(startDate time.Time, endDate time.T
 	}
 	return r.fetchRoomsWithDetails(availableRoomIDs)
 }
+

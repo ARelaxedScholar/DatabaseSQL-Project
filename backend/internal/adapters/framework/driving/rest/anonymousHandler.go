@@ -65,37 +65,71 @@ func (h *AnonymousHandler) GetRoomsByZone(w http.ResponseWriter, r *http.Request
 func (h *AnonymousHandler) SearchRooms(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 
-	startDate, err := parseTimeParam(q.Get("startDate"))
-	if err != nil {
-		http.Error(w, "invalid startDate: "+err.Error(), http.StatusBadRequest)
-		return
+	// For each parameter, if the query param is not empty, parse it and take its address.
+	var startDate *time.Time
+	if s := q.Get("startDate"); s != "" {
+		t, err := parseTimeParam(s)
+		if err != nil {
+			http.Error(w, "invalid startDate: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		startDate = &t
 	}
-	endDate, err := parseTimeParam(q.Get("endDate"))
-	if err != nil {
-		http.Error(w, "invalid endDate: "+err.Error(), http.StatusBadRequest)
-		return
+
+	var endDate *time.Time
+	if s := q.Get("endDate"); s != "" {
+		t, err := parseTimeParam(s)
+		if err != nil {
+			http.Error(w, "invalid endDate: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		endDate = &t
 	}
-	capacity, err := parseIntParam(q.Get("capacity"))
-	if err != nil {
-		http.Error(w, "invalid capacity: "+err.Error(), http.StatusBadRequest)
-		return
+
+	var capacity *int
+	if s := q.Get("capacity"); s != "" {
+		c, err := parseIntParam(s)
+		if err != nil {
+			http.Error(w, "invalid capacity: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		capacity = &c
 	}
-	priceMin, err := parseFloatParam(q.Get("priceMin"))
-	if err != nil {
-		http.Error(w, "invalid priceMin: "+err.Error(), http.StatusBadRequest)
-		return
+
+	var priceMin *float64
+	if s := q.Get("priceMin"); s != "" {
+		p, err := parseFloatParam(s)
+		if err != nil {
+			http.Error(w, "invalid priceMin: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		priceMin = &p
 	}
-	priceMax, err := parseFloatParam(q.Get("priceMax"))
-	if err != nil {
-		http.Error(w, "invalid priceMax: "+err.Error(), http.StatusBadRequest)
-		return
+
+	var priceMax *float64
+	if s := q.Get("priceMax"); s != "" {
+		p, err := parseFloatParam(s)
+		if err != nil {
+			http.Error(w, "invalid priceMax: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		priceMax = &p
 	}
-	hotelChainID, err := parseIntParam(q.Get("hotelChainID"))
-	if err != nil {
-		http.Error(w, "invalid hotelChainID: "+err.Error(), http.StatusBadRequest)
-		return
+
+	var hotelChainID *int
+	if s := q.Get("hotelChainID"); s != "" {
+		id, err := parseIntParam(s)
+		if err != nil {
+			http.Error(w, "invalid hotelChainID: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		hotelChainID = &id
 	}
-	roomType := q.Get("roomType")
+
+	var roomType *string
+	if s := q.Get("roomType"); s != "" {
+		roomType = &s
+	}
 
 	input := dto.RoomSearchInput{
 		StartDate:    startDate,

@@ -177,13 +177,13 @@ type NewStayOutput struct {
 
 // Anonymous Use Case DTOs
 type RoomSearchInput struct {
-	StartDate    time.Time `json:"startDate"`
-	EndDate      time.Time `json:"endDate"`
-	Capacity     int       `json:"capacity"`
-	PriceMin     float64   `json:"priceMin"`
-	PriceMax     float64   `json:"priceMax"`
-	HotelChainID int       `json:"hotelChainId"`
-	RoomType     string    `json:"roomType"`
+	StartDate    *time.Time `json:"startDate,omitempty"`
+	EndDate      *time.Time `json:"endDate,omitempty"`
+	Capacity     *int       `json:"capacity,omitempty"`
+	PriceMin     *float64   `json:"priceMin,omitempty"`
+	PriceMax     *float64   `json:"priceMax,omitempty"`
+	HotelChainID *int       `json:"hotelChainId,omitempty"`
+	RoomType     *string    `json:"roomType,omitempty"`
 }
 
 type RoomSearchOutput struct {
