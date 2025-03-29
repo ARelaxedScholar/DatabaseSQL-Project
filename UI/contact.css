@@ -46,103 +46,37 @@ body {
 
 main {
     flex: 1;
-    padding: 100px 40px 40px; /* Added top padding for navbar */
+    padding: 100px 40px 40px; 
 }
 
-.contact, .contact-info {
-    width: 80%;
-    margin: 40px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1, h2 {
-    color: #2c3e50;
-}
-
-.form-section {
-    display: none;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-}
-
-.form-section.active {
-    display: block;
-}
-
-h3 {
-    color: #333;
-    font-size: 1.5em;
-    margin-bottom: 15px;
-}
-
-label {
-    font-size: 1.1em;
-    color: #555;
-    margin-bottom: 5px;
-    display: block;
-}
-
-input, select, textarea, button {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-textarea {
-    resize: vertical;
-    height: 120px;
-}
-
-input[type="date"], input[type="number"] {
-    width: 48%;
-    display: inline-block;
-}
-
-input[type="radio"] {
-    width: auto;
-    margin-right: 10px;
-}
-
-button {
-    background-color: #ff6600;
-    color: white;
-    border: none;
-    padding: 12px;
-    cursor: pointer;
-    font-size: 1.1em;
-    border-radius: 6px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #d45501;
-}
-
-.room {
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 15px;
-    background-color: #ffffff;
+.contact {
+    padding: 30px;
+    background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.room h3 {
-    margin-top: 0;
+.contact h1, .contact h2 {
+    font-size: 2rem;
     color: #333;
+    margin-bottom: 10px;
 }
 
-.room p {
-    color: #555;
+.contact p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.contact ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.contact ul li {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 10px;
 }
 
 footer {

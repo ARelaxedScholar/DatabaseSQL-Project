@@ -13,118 +13,177 @@
             <ul class="nav-links">
                 <li><a href="welcome.html">Accueil</a></li>
                 <li><a href="booking.html">Réservations</a></li>
-                <li><a href="#">Hôtels</a></li>
+                <li><a href="hotels.html">Hôtels</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
     </header>
     <section class="hotel-chain-details">
-        <h1>Chaîne Hôtelière 1</h1>
-        <p>Découvrez nos hôtels et leurs chambres adaptées à tous les types de voyageurs.</p>
+        <h1>Chaîne Hôtelière</h1>
+        <p>Filtrez les hôtels selon vos critères.</p>
 
-        <div class="hotels">
-            <!-- Hotel 1 -->
+        <div class="filters">
+            <label for="dateStart">Date début :</label>
+            <input type="date" id="dateStart">
+
+            <label for="dateEnd">Date fin :</label>
+            <input type="date" id="dateEnd">
+
+            <label for="capacity">Capacité :</label>
+            <select id="capacity">
+                <option value="">--</option>
+                <option value="1">1 personne</option>
+                <option value="2">2 personnes</option>
+                <option value="3">3 personnes</option>
+                <option value="4">4 personnes</option>
+                <option value="5">5+ personnes</option>
+            </select>
+
+            <label for="category">Vue :</label>
+            <select id="category">
+                <option value="">--</option>
+                <option value="Ocean">Ocean</option>
+                <option value="Montagne">Montagne</option>
+                <option value="Ville">Ville</option>
+                <option value="Parc">Parc</option>
+                <option value="Cour">Cour</option>
+                <option value="Piscine">Piscine</option>
+                
+            </select>
+
+        
+            <label for="category">Rating :</label>
+            <select id="category">
+                <option value="">--</option>
+                <option value="1">1 étoiles</option>
+                <option value="2">2 étoiles</option>
+                <option value="3">3 étoiles</option>
+                <option value="4">4 étoiles</option>
+                <option value="5">5 étoiles</option>
+            </select>
+
+
+           
+
+            <label for="totalRooms">Total chambres :</label>
+            <input type="number" id="totalRooms" min="1">
+
+            <label for="price">Prix max (€) :</label>
+            <input type="number" id="price" min="0">
+
+            <button onclick="filterHotels()">Filtrer</button>
+        </div>
+
+        <div class="hotels" id="hotelList">
             <div class="hotel">
-                <h2>Hôtel 1</h2>
-                <p>5 chambres disponibles :</p>
+                <h2>Hôtel Paris</h2>
+                <p><strong>Chaîne:</strong> Luxury Hotels</p>
+                <p><strong>Catégorie:</strong> 5 étoiles</p>
+                <p><strong>Nombre total de chambres:</strong> 150</p>
+        
+                <h3>Chambres disponibles:</h3>
                 <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
+                    <li>
+                        <strong>Type:</strong> Chambre Simple - 1 personne <br>
+                        <strong>Superficie:</strong> 20m² <br>
+                        <strong>Prix:</strong> 100€/nuit <br>
+                        <strong>Disponibilité:</strong> Oui
+                    </li>
+                    <li>
+                        <strong>Type:</strong> Suite Junior - 2 personnes <br>
+                        <strong>Superficie:</strong> 30m² <br>
+                        <strong>Prix:</strong> 250€/nuit <br>
+                        <strong>Disponibilité:</strong> Oui
+                    </li>
                 </ul>
+        
+                <button class="book-button">Réserver</button>
             </div>
-
+        
             <!-- Hotel 2 -->
             <div class="hotel">
-                <h2>Hôtel 2</h2>
-                <p>5 chambres disponibles :</p>
+                <h2>Hôtel Lyon</h2>
+                <p><strong>Chaîne:</strong> Budget Stays</p>
+                <p><strong>Catégorie:</strong> 3 étoiles</p>
+                <p><strong>Nombre total de chambres:</strong> 80</p>
+        
+                <h3>Chambres disponibles:</h3>
                 <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
+                    <li>
+                        <strong>Type:</strong> Chambre Double - 2 personnes <br>
+                        <strong>Superficie:</strong> 25m² <br>
+                        <strong>Prix:</strong> 120€/nuit <br>
+                        <strong>Disponibilité:</strong> Oui
+                    </li>
+                    <li>
+                        <strong>Type:</strong> Chambre Triple - 3 personnes <br>
+                        <strong>Superficie:</strong> 35m² <br>
+                        <strong>Prix:</strong> 150€/nuit <br>
+                        <strong>Disponibilité:</strong> Non
+                    </li>
                 </ul>
+        
+                <button class="book-button">Réserver</button>
             </div>
-
+        
             <!-- Hotel 3 -->
             <div class="hotel">
-                <h2>Hôtel 3</h2>
-                <p>5 chambres disponibles :</p>
+                <h2>Hôtel Nice</h2>
+                <p><strong>Chaîne:</strong> Coastal Resorts</p>
+                <p><strong>Catégorie:</strong> 4 étoiles</p>
+                <p><strong>Nombre total de chambres:</strong> 120</p>
+        
+                <h3>Chambres disponibles:</h3>
                 <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
+                    <li>
+                        <strong>Type:</strong> Suite Présidentielle - 4 personnes <br>
+                        <strong>Superficie:</strong> 60m² <br>
+                        <strong>Prix:</strong> 350€/nuit <br>
+                        <strong>Disponibilité:</strong> Oui
+                    </li>
                 </ul>
+        
+                <button class="book-button">Réserver</button>
             </div>
-
+        
             <!-- Hotel 4 -->
             <div class="hotel">
-                <h2>Hôtel 4</h2>
-                <p>5 chambres disponibles :</p>
+                <h2>Hôtel Marseille</h2>
+                <p><strong>Chaîne:</strong> Budget Stays</p>
+                <p><strong>Catégorie:</strong> 2 étoiles</p>
+                <p><strong>Nombre total de chambres:</strong> 50</p>
+        
+                <h3>Chambres disponibles:</h3>
                 <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
+                    <li>
+                        <strong>Type:</strong> Chambre Simple - 1 personne <br>
+                        <strong>Superficie:</strong> 18m² <br>
+                        <strong>Prix:</strong> 80€/nuit <br>
+                        <strong>Disponibilité:</strong> Oui
+                    </li>
                 </ul>
+        
+                <button class="book-button">Réserver</button>
             </div>
-
+        
             <!-- Hotel 5 -->
             <div class="hotel">
-                <h2>Hôtel 5</h2>
-                <p>5 chambres disponibles :</p>
+                <h2>Hôtel Bordeaux</h2>
+                <p><strong>Chaîne:</strong> Boutique Hotels</p>
+                <p><strong>Catégorie:</strong> 4 étoiles</p>
+                <p><strong>Nombre total de chambres:</strong> 90</p>
+        
+                <h3>Chambres disponibles:</h3>
                 <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
+                    <li>
+                        <strong>Type:</strong> Chambre Double - 2 personnes <br>
+                        <strong>Superficie:</strong> 22m² <br>
+                        <strong>Prix:</strong> 130€/nuit <br>
+                        <strong>Disponibilité:</strong> Oui
+                    </li>
                 </ul>
-            </div>
-
-            <!-- Hotel 6 -->
-            <div class="hotel">
-                <h2>Hôtel 6</h2>
-                <p>5 chambres disponibles :</p>
-                <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
-                </ul>
-            </div>
-
-            <!-- Hotel 7 -->
-            <div class="hotel">
-                <h2>Hôtel 7</h2>
-                <p>5 chambres disponibles :</p>
-                <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
-                </ul>
-            </div>
-
-            <!-- Hotel 8 -->
-            <div class="hotel">
-                <h2>Hôtel 8</h2>
-                <p>5 chambres disponibles :</p>
-                <ul>
-                    <li>Chambre Simple - 1 personne</li>
-                    <li>Chambre Double - 2 personnes</li>
-                    <li>Chambre Triple - 3 personnes</li>
-                    <li>Suite Junior - 4 personnes</li>
-                    <li>Suite Présidentielle - 5 personnes</li>
-                </ul>
+        
+                <button class="book-button">Réserver</button>
             </div>
         </div>
         <footer>
