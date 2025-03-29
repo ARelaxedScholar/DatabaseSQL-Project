@@ -7,6 +7,7 @@ import (
 
 type Problem struct {
 	ID             int
+	RoomID         int
 	Severity       ProblemSeverity
 	Description    string
 	SignaledWhen   time.Time
@@ -19,6 +20,8 @@ func (self Problem) validate() error {
 	switch {
 	case self.ID < 0:
 		err = errors.New("Problem's id cannot be negative.")
+	case self.RoomID < 0:
+		err = errors.New("Problem's Room id cannot be negative.")
 	case !self.Severity.isValid():
 		err = errors.New("Problem contains invalid severity variant.")
 	case self.Description == "":
