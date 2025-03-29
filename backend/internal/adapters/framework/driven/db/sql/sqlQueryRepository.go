@@ -33,7 +33,9 @@ func (r *PostgresQueryRepository) GetHotelRoomCapacity(hotelId int) (int, error)
 	var count int
 	var hotelExists bool
 
-	err := r.db.QueryRow(query, hotelId).Scan(&count, &hotelExists)
+	err := r.db.QueryRow(query, hotelId).Scan(&count)
+
+	hotelExists = count != 0 // an hotel cannot have no rooms
 
 	if err != nil {
 		wrappedErr := handlePqError(err) // Use helper for consistency
