@@ -18,8 +18,8 @@ func NewStayService(repo ports.StayRepository) ports.StayService {
 	}
 }
 
-func (s *DefaultStayService) RegisterStay(id, clientId, roomId int, reservationId *int, arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string, checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error) {
-	stay, err := models.NewStay(id, clientId, roomId, checkInEmployeeId, checkOutEmployeeId, reservationId, arrivalDate, departureDate, finalPrice, paymentMethod, comments)
+func (s *DefaultStayService) RegisterStay(id, clientId, roomId int, reservationId *int, checkInTime time.Time, checkOutTime *time.Time, checkInEmployeeId int, checkOutEmployeeId *int, comments string) (*models.Stay, error) {
+	stay, err := models.NewStay(id, clientId, roomId, checkInEmployeeId, checkOutEmployeeId, reservationId, checkInTime, checkOutTime, comments)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (s *DefaultStayService) RegisterStay(id, clientId, roomId int, reservationI
 	return dbStay, nil
 }
 
-func (s *DefaultStayService) UpdateStay(id, clientId, roomId int, reservationId *int, arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string, checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error) {
+func (s *DefaultStayService) UpdateStay(id, clientId, roomId int, reservationId *int, checkInTime time.Time, checkOutTime *time.Time, checkInEmployeeId int, checkOutEmployeeId *int, comments string) (*models.Stay, error) {
 	stay, err := s.stayRepo.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (s *DefaultStayService) UpdateStay(id, clientId, roomId int, reservationId 
 	if stay == nil {
 		return nil, errors.New("Stay not found.")
 	}
-	stay, err = models.NewStay(id, clientId, roomId, checkInEmployeeId, checkOutEmployeeId, reservationId, arrivalDate, departureDate, finalPrice, paymentMethod, comments)
+	stay, err = models.NewStay(id, clientId, roomId, checkInEmployeeId, checkOutEmployeeId, reservationId, checkInTime, checkOutTime, comments)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (s *DefaultStayService) UpdateStay(id, clientId, roomId int, reservationId 
 	return stay, nil
 }
 
-func (s *DefaultStayService) EndStay(id int) error {
+func (s *DefaultStayService) EndStay(id, employeeID int) error {
 	stay, err := s.stayRepo.FindByID(id)
 	if err != nil {
 		return err
@@ -56,5 +56,6 @@ func (s *DefaultStayService) EndStay(id int) error {
 	if stay == nil {
 		return errors.New("Stay not found.")
 	}
-	return s.stayRepo.Delete(id)
+	// EndStay
+	return s.stayRepo.EndStay(id, employeeID)
 }

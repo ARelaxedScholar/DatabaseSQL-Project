@@ -151,7 +151,7 @@ type EmployeeAccountUpdateInput struct {
 }
 
 type CheckInInput struct {
-	ReservationID int       `json:"reservationId"`
+	ReservationID *int      `json:"reservationId,omitempty"`
 	EmployeeID    int       `json:"employeeId"`
 	CheckInTime   time.Time `json:"checkInTime"`
 }
@@ -163,11 +163,9 @@ type CheckInOutput struct {
 type NewStayInput struct {
 	ClientID          int       `json:"clientId"`
 	RoomID            int       `json:"roomId"`
+	ReservationID     *int      `json:"reservationID,omitempty"`
 	CheckInEmployeeID int       `json:"checkInEmployeeId"`
-	ArrivalDate       time.Time `json:"arrivalDate"`
-	DepartureDate     time.Time `json:"departureDate"`
-	FinalPrice        float64   `json:"finalPrice"`
-	PaymentMethod     string    `json:"paymentMethod"`
+	CheckInTime       time.Time `json:"checkInTime"`
 	Comments          string    `json:"comments"`
 }
 
@@ -276,6 +274,8 @@ type RoomOutputAdmin struct {
 // CheckoutInput represents the data required to perform a checkout.
 type CheckoutInput struct {
 	StayID        int
+	EmpoyeeID     int
+	CheckOutTime  time.Time
 	FinalPrice    float64
 	PaymentMethod string
 }

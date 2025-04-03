@@ -157,6 +157,7 @@ type StayRepository interface {
 	Save(stay *models.Stay) (*models.Stay, error)
 	FindByID(id int) (*models.Stay, error)
 	Update(stay *models.Stay) error
+	EndStay(id, employeeID int) error
 	Delete(id int) error
 }
 

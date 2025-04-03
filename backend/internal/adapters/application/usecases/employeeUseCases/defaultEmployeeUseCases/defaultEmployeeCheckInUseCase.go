@@ -27,14 +27,31 @@ func NewEmployeeCheckInUseCase(
 }
 
 func (uc *DefaultEmployeeCheckInUseCase) CheckIn(input dto.CheckInInput) (dto.CheckInOutput, error) {
-	reservation, err := uc.reservationRepo.FindByID(input.ReservationID)
+	var reservation *models.Reservation
+	if input.ReservationID != nil {
+		res, err := uc.reservationRepo.FindByID(*input.ReservationID)
+		reservation = res
 	if err != nil {
 		return dto.CheckInOutput{}, err
 	}
-	if reservation == nil {
-		return dto.CheckInOutput{}, errors.New("reservation not found")
 	}
 
+	if reservation == nil && input.ReservationID != nil {
+		return dto.CheckInOutput{}, errors.New("reservation not found")
+	} else if reservation == nil {
+		log.Printf("At %v: A stay was created without prior reservation", input.CheckInTime)
+	}
+
+	if reservation != nil {
+		// Do further validations about time
+		if input.CheckInTime.Before(reservation.StartDate) {
+			return dto.CheckInOutput{}, errors.New("Attempt to check in on a reservation before reservation started.")
+		} else if input.CheckInTime.After(reservation.EndDate) {
+			return dto.CheckInOutput{}, errors.New("Attempt to check in on a reservation after reservation ended.")
+		}
+	}
+
+	var err error
 	roomID := reservation.RoomID
 	if roomID == 0 { // if default room ID is passed we look for a free room
 		roomID, err = uc.AssignRoomForReservation(reservation)
@@ -49,12 +66,10 @@ func (uc *DefaultEmployeeCheckInUseCase) CheckIn(input dto.CheckInInput) (dto.Ch
 		0,
 		reservation.ClientID,
 		roomID,
-		&reservation.ID,
+		input.ReservationID,
 		input.CheckInTime,
-		time.Time{},
-		0,
-		"",
-		&checkInEmployeeID,
+		nil,
+		checkInEmployeeID,
 		nil,
 		"",
 	)

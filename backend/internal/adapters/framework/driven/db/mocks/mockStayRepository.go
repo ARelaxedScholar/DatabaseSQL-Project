@@ -50,6 +50,10 @@ func (r *MockStayRepository) Update(stay *models.Stay) error {
 	return nil
 }
 
+func (r *MockStayRepository) EndStay(stay, employeeID int) error {
+	return nil
+}
+
 func (r *MockStayRepository) Delete(id int) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()

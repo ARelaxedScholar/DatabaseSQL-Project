@@ -2,6 +2,7 @@ package defaultEmployeeUseCases
 
 import (
 	"errors"
+
 	"github.com/sql-project-backend/internal/models/dto"
 	"github.com/sql-project-backend/internal/ports"
 )
@@ -31,6 +32,9 @@ func (uc *DefaultEmployeeCheckoutUseCase) Checkout(input dto.CheckoutInput) (dto
 	if input.StayID <= 0 {
 		return dto.CheckoutOutput{}, errors.New("invalid stay ID")
 	}
+	if input.EmpoyeeID <= 0 {
+		return dto.CheckoutOutput{}, errors.New("Invalid Employee ID")
+	}
 	if input.FinalPrice < 0 {
 		return dto.CheckoutOutput{}, errors.New("final price cannot be negative")
 	}
@@ -44,7 +48,7 @@ func (uc *DefaultEmployeeCheckoutUseCase) Checkout(input dto.CheckoutInput) (dto
 	}
 
 	// Finalize the stay checkout. Here we call EndStay to "end" the stay.
-	if err := uc.stayService.EndStay(input.StayID); err != nil {
+	if err := uc.stayService.EndStay(input.StayID, input.EmpoyeeID); err != nil {
 		return dto.CheckoutOutput{}, err
 	}
 

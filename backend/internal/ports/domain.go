@@ -56,12 +56,12 @@ type ReservationService interface {
 
 type StayService interface {
 	RegisterStay(id, clientId, roomId int, reservationId *int,
-		arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string,
-		checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error)
+		arrivalDate time.Time, departureDate *time.Time,
+		checkInEmployeeId int, checkOutEmployeeId *int, comments string) (*models.Stay, error)
 	UpdateStay(id, clientId int, roomId int, reservationId *int,
-		arrivalDate, departureDate time.Time, finalPrice float64, paymentMethod string,
-		checkInEmployeeId, checkOutEmployeeId *int, comments string) (*models.Stay, error)
-	EndStay(id int) error
+		arrivalDate time.Time, departureDate *time.Time,
+		checkInEmployeeId int, checkOutEmployeeId *int, comments string) (*models.Stay, error)
+	EndStay(id, employeeID int) error
 }
 
 type PaymentService interface {
