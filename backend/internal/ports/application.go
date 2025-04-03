@@ -11,8 +11,12 @@ import (
 
 // TokenService (For the Login)
 type TokenService interface {
-	GenerateToken(userID int) (string, error)
-	ValidateToken(token string) (int, error)
+	GenerateTokenWithDuration(userID int, role string, duration time.Duration) (string, error)
+	ValidateToken(token string) (int, string, error)
+}
+
+type EmailService interface {
+	SendLoginLink(recipient string, loginLink string) error
 }
 
 // Outline all possible usecases
@@ -26,6 +30,7 @@ type ClientRegistrationUseCase interface {
 
 type ClientLoginUseCase interface {
 	Login(input dto.ClientLoginInput) (dto.ClientLoginOutput, error)
+	MagicLogin(tokenString string) (dto.MagicLoginOutput, error)
 }
 
 type ClientMakeReservationUseCase interface {
@@ -45,6 +50,7 @@ type ClientProfileManagementUseCase interface {
 // ## Employee USE CASES
 type EmployeeLoginUseCase interface {
 	Login(input dto.EmployeeLoginInput) (dto.EmployeeLoginOutput, error)
+	MagicLogin(tokenString string) (dto.MagicLoginOutput, error)
 }
 
 // This when we already have a reservation
@@ -65,7 +71,7 @@ type EmployeeCreateNewStayUseCase interface {
 type SearchRoomsUseCase interface {
 	SearchRooms(input dto.RoomSearchInput) (dto.RoomSearchOutput, error)
 	GetNumberOfRoomsForHotel(hotelID int) (int, error)
-	GetNumberOfRoomsPerZone()  (map[string]int, error)  // Zone == City
+	GetNumberOfRoomsPerZone() (map[string]int, error) // Zone == City
 }
 
 // ## Admin USE CASES (Right now no requirement for that so kind of an after thought)

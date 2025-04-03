@@ -33,10 +33,10 @@ func NewAdminHandler(
 
 func (h *AdminHandler) requireAdmin(w http.ResponseWriter, r *http.Request) (int, bool) {
     userID, ok := r.Context().Value("userID").(int)
-	if !ok {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return 0, false
-	}
+    if !ok {
+        http.Error(w, "unauthorized", http.StatusUnauthorized)
+        return 0, false
+    }
     role, ok := r.Context().Value("role").(string)
     if !ok || role != "admin" {
         http.Error(w, "forbidden", http.StatusForbidden)

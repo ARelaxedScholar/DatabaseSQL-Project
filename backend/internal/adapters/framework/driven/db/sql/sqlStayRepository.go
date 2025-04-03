@@ -66,7 +66,7 @@ func scanStay(scanner interface {
 
 	// Convert sql.NullInt64 back to *int pointers
 	if reservationID.Valid {
-		id := int(reservationID.Int64) 
+		id := int(reservationID.Int64)
 		stay.ReservationID = &id
 	} else {
 		stay.ReservationID = nil

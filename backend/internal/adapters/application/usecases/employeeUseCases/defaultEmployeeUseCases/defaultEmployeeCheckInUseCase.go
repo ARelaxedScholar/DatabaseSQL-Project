@@ -32,9 +32,9 @@ func (uc *DefaultEmployeeCheckInUseCase) CheckIn(input dto.CheckInInput) (dto.Ch
 	if input.ReservationID != nil {
 		res, err := uc.reservationRepo.FindByID(*input.ReservationID)
 		reservation = res
-	if err != nil {
-		return dto.CheckInOutput{}, err
-	}
+		if err != nil {
+			return dto.CheckInOutput{}, err
+		}
 	}
 
 	if reservation == nil && input.ReservationID != nil {

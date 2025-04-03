@@ -20,12 +20,10 @@ func (uc *DefaultEmployeeCreateNewStayUseCase) CreateNewStay(input dto.NewStayIn
 		0, // new stay, ID will be generated
 		input.ClientID,
 		input.RoomID,
-		nil, // no reservation ID (e.g., for walk-in)
-		input.ArrivalDate,
-		input.DepartureDate,
-		input.FinalPrice,
-		input.PaymentMethod,
-		&input.CheckInEmployeeID,
+		input.ReservationID, // no reservation ID (e.g., for walk-in) would be nil
+		input.CheckInTime,
+		nil,
+		input.CheckInEmployeeID,
 		nil, // no check-out employee at creation
 		input.Comments,
 	)

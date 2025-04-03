@@ -9,14 +9,14 @@ import (
 )
 
 type MockStayRepository struct {
-	mu    sync.Mutex
-	stays map[int]*models.Stay
+	mu     sync.Mutex
+	stays  map[int]*models.Stay
 	nextID int
 }
 
 func NewMockStayRepository() ports.StayRepository {
 	return &MockStayRepository{
-		stays: make(map[int]*models.Stay),
+		stays:  make(map[int]*models.Stay),
 		nextID: 1,
 	}
 }
