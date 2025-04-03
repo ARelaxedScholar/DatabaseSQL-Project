@@ -28,7 +28,7 @@ func (r *PostgresQueryRepository) GetHotelRoomCapacity(hotelId int) (int, error)
 	}
 
 	// Query to count rooms for the given hotel ID.
-	query := `SELECT COUNT(r.id) FROM room r WHERE r.hotel_id = $1`
+	query := `SELECT room_count FROM room_per_hotel rph WHERE rph.hotel_id = $1`
 
 	var count int
 	var hotelExists bool
@@ -53,14 +53,7 @@ func (r *PostgresQueryRepository) GetHotelRoomCapacity(hotelId int) (int, error)
 func (r *PostgresQueryRepository) GetAvailableRoomsByZone() (map[string]int, error) {
 
 	query := `
-        SELECT
-            h.city as zone,  -- Use the dedicated city column
-            COUNT(r.id) as room_count
-        FROM room r
-        JOIN hotel h ON r.hotel_id = h.id
-        WHERE h.city IS NOT NULL AND h.city <> '' -- Ensure city is valid
-        GROUP BY zone
-        ORDER BY zone;
+        SELECT * FROM rooms_by_zone;
     `
 
 	rows, err := r.db.Query(query)
