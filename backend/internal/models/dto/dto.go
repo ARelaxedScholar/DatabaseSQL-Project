@@ -29,13 +29,11 @@ type ClientRegistrationOutput struct {
 }
 
 type ClientLoginInput struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email string `json:"email"`
 }
 
 type ClientLoginOutput struct {
-	ClientID int    `json:"clientId"`
-	Token    string `json:"token"`
+	Message string `json:"message"`
 }
 
 type ReservationInput struct {
@@ -118,13 +116,16 @@ type EmployeeRegistrationOutput struct {
 }
 
 type EmployeeLoginInput struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email string `json:"email"`
 }
 
 type EmployeeLoginOutput struct {
-	EmployeeID int    `json:"employeeId"`
-	Token      string `json:"token"`
+	Message string `json:"message"`
+}
+
+type MagicLoginOutput struct {
+	Message      string `json:"message"`
+	SessionToken string `json:"sessionToken,omitempty"`
 }
 
 // Used by Admin

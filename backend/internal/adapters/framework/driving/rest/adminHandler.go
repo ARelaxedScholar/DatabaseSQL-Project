@@ -32,13 +32,19 @@ func NewAdminHandler(
 }
 
 func (h *AdminHandler) requireAdmin(w http.ResponseWriter, r *http.Request) (int, bool) {
-	adminID, ok := r.Context().Value("adminID").(int)
+    userID, ok := r.Context().Value("userID").(int)
 	if !ok {
 		http.Error(w, "unauthorized", http.StatusUnauthorized)
 		return 0, false
 	}
-	return adminID, true
+    role, ok := r.Context().Value("role").(string)
+    if !ok || role != "admin" {
+        http.Error(w, "forbidden", http.StatusForbidden)
+        return 0, false
+    }
+    return userID, true
 }
+
 
 func (h *AdminHandler) AddHotel(w http.ResponseWriter, r *http.Request) {
 	if _, ok := h.requireAdmin(w, r); !ok {
