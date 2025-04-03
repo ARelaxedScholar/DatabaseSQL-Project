@@ -37,6 +37,6 @@ func (uc *DefaultClientReservationsManagementUseCase) ViewReservations(clientID 
 	return outputs, nil
 }
 
-func (uc *DefaultClientReservationsManagementUseCase) CancelReservation(reservationID int) error {
-	return uc.reservationService.CancelReservation(reservationID)
+func (uc *DefaultClientReservationsManagementUseCase) CancelReservation(reservationID, clientID int) error {
+	return uc.reservationService.CancelReservationForUser(reservationID, clientID)
 }
