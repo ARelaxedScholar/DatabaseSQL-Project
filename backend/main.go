@@ -142,7 +142,7 @@ func main() {
 
 	// Employee routes.
 	router.HandleFunc("/employees/login", employeeHandler.LoginEmployee).Methods("POST")
-	router.HandleFunc("/employess/magic", employeeHandler.MagicLogin).Methods("GET")
+	router.HandleFunc("/employees/magic", employeeHandler.MagicLogin).Methods("GET")
 
 	protectedEmployee := router.PathPrefix("/employees").Subrouter()
 	protectedEmployee.Use(rest.AuthMiddleWare(tokenService))
