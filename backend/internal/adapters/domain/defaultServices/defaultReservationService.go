@@ -2,6 +2,7 @@ package defaultServices
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/sql-project-backend/internal/models"
@@ -55,6 +56,25 @@ func (s *DefaultReservationService) CancelReservation(id int) error {
 	}
 	if reservation == nil {
 		return errors.New("Reservation not found.")
+	}
+	// Update the reservation's status to cancelled.
+	reservation.Status = models.Cancelled
+	if err = s.reservationRepo.Update(reservation); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *DefaultReservationService) CancelReservationForUser(id, clientID int) error {
+	reservation, err := s.reservationRepo.FindByID(id)
+	if err != nil {
+		return err
+	}
+	if reservation == nil {
+		return errors.New("Reservation not found.")
+	}
+	if reservation.ClientID != clientID {
+		return errors.New(fmt.Sprintf("This reservation (id: %d) does not belong to user %d.", id, clientID))
 	}
 	// Update the reservation's status to cancelled.
 	reservation.Status = models.Cancelled

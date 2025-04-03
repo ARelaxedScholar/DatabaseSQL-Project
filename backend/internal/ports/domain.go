@@ -51,6 +51,7 @@ type ReservationService interface {
 	UpdateReservation(id, clientId, hotelID, roomId int,
 		startDate, endDate, reservationDate time.Time, totalPrice float64, status models.ReservationStatus) (*models.Reservation, error)
 	CancelReservation(id int) error
+	CancelReservationForUser(id, userID int) error
 	GetReservationsByClient(clientID int) ([]*models.Reservation, error)
 }
 

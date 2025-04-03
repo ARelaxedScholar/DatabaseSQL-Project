@@ -34,7 +34,7 @@ type ClientMakeReservationUseCase interface {
 
 type ClientReservationsManagementUseCase interface {
 	ViewReservations(clientID int) ([]dto.ReservationOutput, error)
-	CancelReservation(reservationID int) error
+	CancelReservation(reservationID int, userID int) error
 }
 
 type ClientProfileManagementUseCase interface {
