@@ -330,6 +330,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Search/Booking Logic ---
+    // Global mapping object so we can convert from room type ID to name later
+let roomTypeMapping = {};
+
+/**
+ * Loads room types from the backend and populates the "search-room-type" select.
+ * Each option's value is the room type's numeric ID, and its text is "ID: Name".
+ */
+async function loadSearchRoomTypes() {
+    try {
+        const roomTypes = await apiRequest('/roomtypes', 'GET', null, false);
+        if (roomTypes && Array.isArray(roomTypes)) {
+            // Sort room types by ID (ascending)
+            roomTypes.sort((a, b) => a.id - b.id);
+            // Build mapping and populate select
+            roomTypeMapping = {};
+            const select = document.getElementById('search-room-type');
+            select.innerHTML = `<option value="">Tous</option>`;
+            roomTypes.forEach(rt => {
+                roomTypeMapping[rt.id] = rt.name;
+                const option = document.createElement('option');
+                option.value = rt.id; // Numeric ID as value
+                option.textContent = `${rt.id}: ${rt.name}`;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error("Failed to load room types for search:", error);
+    }
+}
+
+
     const searchForm = document.getElementById('search-form');
     const roomResultsContainer = document.getElementById('room-results-container');
     let lastSearchParams = {};
@@ -346,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error("Failed to load hotel chains for search:", error);
             }
+            await loadSearchRoomTypes();
         }
         // Load Room Types
         const roomTypeSelect = document.getElementById('search-room-type');
@@ -384,48 +416,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const year = dateObj.getFullYear().toString(); // Full year
         return `${month}-${day}-${year}`;
       }
+      
 
-    searchForm?.addEventListener('submit', async (e) => {
+      searchForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearAllFeedback();
         const feedbackId = 'search-feedback';
         roomResultsContainer.innerHTML = '<p>Recherche en cours...</p>';
-
+    
         const formData = new FormData(e.target);
-        const params = new URLSearchParams();
-        const startDate = formData.get('startDate');
-        const endDate = formData.get('endDate');
-
-        if (!startDate || !endDate) {
+        const rawStartDate = formData.get('startDate');
+        const rawEndDate = formData.get('endDate');
+    
+        if (!rawStartDate || !rawEndDate) {
             roomResultsContainer.innerHTML = '';
             return displayFeedback(feedbackId, 'Les dates d\'arrivée et de départ sont requises.', true);
         }
-        if (new Date(endDate) <= new Date(startDate)) {
+        if (new Date(rawEndDate) <= new Date(rawStartDate)) {
             roomResultsContainer.innerHTML = '';
             return displayFeedback(feedbackId, 'La date de départ doit être après la date d\'arrivée.', true);
         }
-
-        params.append('startDate', formatDateForBackend(startDate));
-        params.append('endDate', formatDateForBackend(endDate));
-        lastSearchParams = { startDate, endDate };
-
-        if (formData.get('capacity')) params.append('capacity', formData.get('capacity'));
-        if (formData.get('hotelChainId')) params.append('hotelChainId', formData.get('hotelChainId'));
-
-        const priceMax = formData.get('price');
-        if (priceMax) params.append('priceMax', priceMax);
-        // If needed, add priceMin
-
-        const roomType = formData.get('roomType');
-        if (roomType) params.append('roomType', roomType);
-
+    
+        // Convert dates using your helper (assume MM-DD-YYYY as required)
+        const startDate = formatDateForBackend(rawStartDate);
+        const endDate = formatDateForBackend(rawEndDate);
+    
+        // Convert optional numeric fields
+        const capacity = formData.get('capacity') ? parseInt(formData.get('capacity')) : undefined;
+        const priceMin = formData.get('priceMin') ? parseFloat(formData.get('priceMin')) : undefined;
+        const priceMax = formData.get('priceMax') ? parseFloat(formData.get('priceMax')) : undefined;
+        const hotelChainId = formData.get('hotelChainId') ? parseInt(formData.get('hotelChainId')) : undefined;
+    
+        // For room type, the select returns a numeric ID (as a string). If provided, map it to the corresponding name.
+        const roomTypeId = formData.get('roomType');
+        let roomType;
+        if (roomTypeId) {
+            roomType = roomTypeMapping[roomTypeId];
+        }
+    
+        // Build the payload object following RoomSearchInput DTO
+        const searchPayload = {
+            startDate: startDate,
+            endDate: endDate,
+            capacity: capacity,
+            priceMin: priceMin,
+            priceMax: priceMax,
+            hotelChainId: hotelChainId,
+            roomType: roomType
+        };
+    
+        // Create URL query parameters, omitting undefined values
+        const params = new URLSearchParams();
+        for (const key in searchPayload) {
+            if (searchPayload[key] !== undefined && searchPayload[key] !== '') {
+                params.append(key, searchPayload[key]);
+            }
+        }
+    
         try {
             const searchResult = await apiRequest(`/search/rooms?${params.toString()}`, 'GET', null, false);
             const rooms = searchResult?.rooms;
             if (!rooms || rooms.length === 0) {
                 roomResultsContainer.innerHTML = '<p>Aucune chambre disponible pour les critères sélectionnés.</p>';
             } else {
-                // Render each room result and include data-price for later use
                 roomResultsContainer.innerHTML = rooms.map(room => `
                     <div class="room-result" data-room-id="${room.roomId}" data-hotel-id="${room.hotelId}" data-price="${room.price}">
                         <div class="details">
@@ -446,6 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
             roomResultsContainer.innerHTML = '<p>Erreur lors de la recherche.</p>';
         }
     });
+    
 
     // Reservation event: compute totalPrice and include DTO fields
     roomResultsContainer?.addEventListener('click', async (e) => {
