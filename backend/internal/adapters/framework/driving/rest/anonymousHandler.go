@@ -151,16 +151,17 @@ func (h *AnonymousHandler) SearchRooms(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseTimeParam(s string) (time.Time, error) {
-	if s == "" {
-		return time.Time{}, nil
-	}
-	// Assume the timestamp is in seconds.
-	seconds, err := strconv.ParseInt(s, 10, 64)
-	if err != nil {
-		return time.Time{}, err
-	}
-	return time.Unix(seconds, 0), nil
+    if s == "" {
+        return time.Time{}, nil
+    }
+    // Parse the date in the "MM-DD-YYYY" format.
+    t, err := time.Parse("01-02-2006", s)
+    if err != nil {
+        return time.Time{}, err
+    }
+    return t, nil
 }
+
 
 func parseIntParam(s string) (int, error) {
 	if s == "" {
