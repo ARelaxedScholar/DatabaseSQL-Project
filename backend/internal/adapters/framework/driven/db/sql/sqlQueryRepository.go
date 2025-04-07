@@ -28,7 +28,7 @@ func (r *PostgresQueryRepository) GetHotelRoomCapacity(hotelId int) (int, error)
 	}
 
 	// Query to count rooms for the given hotel ID.
-	query := `SELECT room_count FROM room_per_hotel rph WHERE rph.hotel_id = $1`
+	query := `SELECT room_count FROM rooms_per_hotel rph WHERE rph.hotel_id = $1`
 
 	var count int
 	var hotelExists bool
