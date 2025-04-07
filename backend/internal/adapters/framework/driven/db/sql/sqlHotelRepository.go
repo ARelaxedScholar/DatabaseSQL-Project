@@ -1,11 +1,13 @@
 package sql
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 
 	"github.com/sql-project-backend/internal/models"
+	"github.com/sql-project-backend/internal/models/dto"
 	"github.com/sql-project-backend/internal/ports"
 )
 
@@ -153,4 +155,27 @@ func (r *PostgresHotelRepository) Delete(id int) error {
 	}
 
 	return nil
+}
+
+// ListHotels returns all hotels (id + name).
+func (r *PostgresHotelRepository) ListHotels(ctx context.Context) ([]*dto.HotelPublic, error) {
+	rows, err := r.db.QueryContext(ctx, `
+        SELECT id, name
+        FROM hotel
+        ORDER BY name
+    `)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*dto.HotelPublic
+	for rows.Next() {
+		var h dto.HotelPublic
+		if err := rows.Scan(&h.HotelID, &h.Name); err != nil {
+			return nil, err
+		}
+		out = append(out, &h)
+	}
+	return out, rows.Err()
 }

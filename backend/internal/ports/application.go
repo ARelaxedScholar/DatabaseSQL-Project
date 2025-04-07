@@ -133,6 +133,7 @@ type HotelChainRepository interface {
 	FindByID(id int) (*models.HotelChain, error)
 	Update(chain *models.HotelChain) error
 	Delete(id int) error
+	ListHotelChains(ctx context.Context) ([]*dto.HotelChainPublic, error)
 }
 
 type HotelRepository interface {
@@ -140,6 +141,7 @@ type HotelRepository interface {
 	FindByID(id int) (*models.Hotel, error)
 	Update(hotel *models.Hotel) error
 	Delete(id int) error
+	ListHotels(ctx context.Context) ([]*dto.HotelPublic, error)
 }
 
 type RoomRepository interface {

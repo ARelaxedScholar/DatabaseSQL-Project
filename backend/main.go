@@ -126,10 +126,22 @@ func main() {
 	employeeHandler := rest.NewEmployeeHandler(employeeLoginUseCase, checkInUseCase, createNewStayUseCase, checkoutUseCase)
 	adminHandler := rest.NewAdminHandler(adminHotelManagementUseCase, adminHotelChainUseCase, adminRoomManagementUseCase, adminAccountManagementUseCase)
 	anonymousHandler := rest.NewAnonymousHandler(searchRoomsUseCase)
+	publicHandler := &rest.PublicHandler{
+		HotelChainRepo: hotelChainRepo,
+		HotelRepo:      hotelRepo,
+		RoomTypeRepo:   myPostgreImpl.NewPostgresRoomTypeRepository(db),
+	}
 
 	// Set up Gorilla Mux router.
 	router := mux.NewRouter()
 	router.Use(corsMiddleware)
+
+	// Public routes needed for esthetics
+	router.HandleFunc("/hotelchains", publicHandler.GetHotelChains).Methods("GET")
+	router.HandleFunc("/hotels", publicHandler.GetHotels).Methods("GET")
+
+	// New roomtypes endpoint
+	router.HandleFunc("/roomtypes", publicHandler.GetRoomTypes).Methods("GET")
 
 	// Client routes.
 	router.HandleFunc("/clients/register", clientHandler.RegisterClient).Methods("POST")

@@ -2,6 +2,25 @@ package dto
 
 import "time"
 
+// HotelChainPublic is used by the public /hotelchains endpoint.
+type HotelChainPublic struct {
+    ChainID int    `json:"chainId"`
+    Name    string `json:"name"`
+}
+
+// HotelPublic is used by the public /hotels endpoint.
+type HotelPublic struct {
+    HotelID int    `json:"hotelId"`
+    Name    string `json:"name"`
+}
+
+// RoomTypePublic is used by GET /roomtypes
+type RoomTypePublic struct {
+    RoomTypeID int    `json:"roomTypeId"`
+    Name       string `json:"name"`
+}
+
+
 // New unified Client/Employee output
 type AccountOutput struct {
 	AccountID int       `json:"accountId"`

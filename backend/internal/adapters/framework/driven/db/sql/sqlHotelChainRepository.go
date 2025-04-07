@@ -1,11 +1,13 @@
 package sql
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 
 	"github.com/sql-project-backend/internal/models"
+	"github.com/sql-project-backend/internal/models/dto"
 	"github.com/sql-project-backend/internal/ports"
 
 	"github.com/lib/pq"
@@ -174,4 +176,27 @@ func (r *PostgresHotelChainRepository) Delete(id int) error {
 	}
 
 	return nil
+}
+
+// ListHotelChains returns all hotel chains (id + name).
+func (r *PostgresHotelChainRepository) ListHotelChains(ctx context.Context) ([]*dto.HotelChainPublic, error) {
+	rows, err := r.db.QueryContext(ctx, `
+        SELECT id, name
+        FROM hotel_chain
+        ORDER BY name
+    `)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*dto.HotelChainPublic
+	for rows.Next() {
+		var hc dto.HotelChainPublic
+		if err := rows.Scan(&hc.ChainID, &hc.Name); err != nil {
+			return nil, err
+		}
+		out = append(out, &hc)
+	}
+	return out, rows.Err()
 }
