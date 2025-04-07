@@ -1400,41 +1400,81 @@ if (!clientId) {
 
     async function loadView1_RoomsPerArea() {
         const feedbackId = 'views-feedback';
-        viewRoomsPerAreaDiv.innerHTML = '<p>Chargement Vue 1...</p>';
+        viewRoomsPerAreaDiv.innerHTML = '<p>Chargement Vue 1…</p>';
+      
         try {
-            const viewData = await apiRequest('/search/zones/rooms', 'GET', null, true);
-            if (!viewData || !Array.isArray(viewData) || viewData.length === 0) {
-                viewRoomsPerAreaDiv.innerHTML = '<p>Aucune donnée disponible.</p>';
-                return;
-            }
-            let html = '<table><thead><tr><th>Zone (Ville)</th><th>Nb Chambres Disponibles</th></tr></thead><tbody>';
-            html += viewData.map(item => `<tr><td data-label="Zone">${item.area || 'N/A'}</td><td data-label="Nb Chambres">${item.available_rooms_count ?? 'N/A'}</td></tr>`).join('');
-            html += '</tbody></table>';
-            viewRoomsPerAreaDiv.innerHTML = html;
-        } catch (error) {
-            displayFeedback(feedbackId, `Erreur Vue 1: ${error.message}`, true);
-            viewRoomsPerAreaDiv.innerHTML = '<p>Impossible de charger.</p>';
+          const raw = await apiRequest('/search/zones/rooms', 'GET', null, true);
+      
+          // Normalize to an array of { area, available_rooms_count }
+          let dataArray;
+          if (Array.isArray(raw)) {
+            dataArray = raw;
+          } else if (raw && typeof raw === 'object') {
+            dataArray = Object.entries(raw).map(([area, count]) => ({
+              area,
+              available_rooms_count: count
+            }));
+          } else {
+            dataArray = [];
+          }
+      
+          if (dataArray.length === 0) {
+            viewRoomsPerAreaDiv.innerHTML = '<p>Aucune donnée disponible.</p>';
+            return;
+          }
+      
+          // Build HTML table
+          let html = '<table><thead><tr><th>Zone (Ville)</th><th>Nb Chambres Disponibles</th></tr></thead><tbody>';
+          for (const item of dataArray) {
+            html += `
+              <tr>
+                <td data-label="Zone">${item.area}</td>
+                <td data-label="Nb Chambres">${item.available_rooms_count}</td>
+              </tr>
+            `;
+          }
+          html += '</tbody></table>';
+          viewRoomsPerAreaDiv.innerHTML = html;
+      
+        } catch (err) {
+          console.error('Vue 1 error:', err);
+          displayFeedback(feedbackId, `Erreur Vue 1 : ${err.message}`, true);
+          viewRoomsPerAreaDiv.innerHTML = '<p>Impossible de charger.</p>';
         }
-    }
+      }
+      
+      
+      // Wire the button
+      refreshView1Button.addEventListener('click', loadView1_RoomsPerArea);
+      
 
     refreshView1Button?.addEventListener('click', loadView1_RoomsPerArea);
 
-    viewHotelCapacitySelect?.addEventListener('change', async (e) => {
-        const hotelId = e.target.value;
-        const feedbackId = 'views-feedback';
-        viewHotelCapacityResultDiv.innerHTML = '';
+    viewHotelCapacitySelect.addEventListener('change', async (e) => {
         clearAllFeedback();
+        const hotelId = e.target.value;
+        viewHotelCapacityResultDiv.innerHTML = '';
         if (!hotelId) return;
-        viewHotelCapacityResultDiv.innerHTML = '<p>Chargement...</p>';
+      
+        viewHotelCapacityResultDiv.innerHTML = '<p>Chargement capacité…</p>';
         try {
-            const result = await apiRequest(`/search/hotels/${hotelId}/room-count`, 'GET', null, true);
-            const capacity = result?.total_capacity ?? 'N/A';
-            viewHotelCapacityResultDiv.innerHTML = `<p><strong>Capacité totale (Hôtel ID ${hotelId}):</strong> ${capacity}</p>`;
-        } catch (error) {
-            displayFeedback(feedbackId, `Erreur Vue 2: ${error.message}`, true);
-            viewHotelCapacityResultDiv.innerHTML = '<p>Impossible de charger.</p>';
+          const result = await apiRequest(
+            `/search/hotels/${hotelId}/room-count`,
+            'GET',
+            null,
+            true
+          );
+          // The handler returns { total_capacity: N }
+          const cap = result?.total_capacity ?? 'N/A';
+          viewHotelCapacityResultDiv.innerHTML =
+            `<p><strong>Capacité totale (Hôtel ${hotelId}):</strong> ${cap}</p>`;
+        } catch (err) {
+          console.error('Vue 2 error:', err);
+          displayFeedback('views-feedback', `Erreur Vue 2 : ${err.message}`, true);
+          viewHotelCapacityResultDiv.innerHTML = '<p>Impossible de charger.</p>';
         }
-    });
+      });
+      
 
     // --- Initial Setup ---
     function initializeApp() {
