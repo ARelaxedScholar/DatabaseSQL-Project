@@ -87,6 +87,9 @@ A real‑time hotel reservation system that allows clients to search for and boo
    cd backend
    go run .main.go
    ```
+   *Please note that all secrets for this are handled through GCP secrets, as a result
+   to run this locally, these secrets will need to be passed as well.
+   Please refer to .env.example to know what to furnish.*
 
 ---
 
