@@ -1,60 +1,161 @@
-# DatabaseSQL-Project
-e-Hôtels — Reservation Management System
+# e-Hôtels — Reservation Management System
 
-Authors : Group 15
-Jepherson Fenelon (300291711)
-Mia Partington (300291725)
-Ange Jedidiah Kouakou (300314061)
+**Authors:** Group 15  
+Ange Jedidiah Kouakou (300314061)  
+Jepherson Fenelon (300291711)  
+Mia Partington (300291725)  
 Patrick Bonini (300273064)
 
-Description
-This project is a web application that allows clients to book rooms at various hotels in real-time. 
+---
 
-Technologies Used
-    Database: Supabase (PostgreSQL)
+## 🚀 Table of Contents
 
-Frontend: HTML, CSS, JavaScript
-Backend: Supabase (with Go or other, if applicable)
-Tools: GitHub, Supabase, VS Code
+1. [Description](#description)  
+2. [Features](#features)  
+3. [Tech Stack](#tech-stack)  
+4. [Prerequisites](#prerequisites)  
+5. [Getting Started](#getting-started)  
+6. [Project Structure](#project-structure)  
+7. [API Reference](#api-reference)  
+8. [Testing](#testing)  
+9. [Deployment](#deployment)  
+10. [Contributing](#contributing)  
+11. [License](#license)
 
-Features
-Real-time room reservations
-Room search based on various criteria
-Management of bookings and payments
-View available rooms by zone and room capacity
-Management of employees and clients
+---
 
-Prerequisites
-    Before you start, make sure you have the following installed: 
-        Node.js
-        VS Code (or any other code editor)
+## Description
 
+A real‑time hotel reservation system that allows clients to search for and book rooms, and employees to manage bookings, check‑in/out, and view analytics by zone and capacity.
 
-A Supabase account to access the database
-    Authentication
-    To sign in to our Supabase dashboard for the project, please use the following credentials:
-        Email: sunflowerbookingtest@gmail.com
-        Password: SunflowerBooking1234!
+---
 
-Steps to Install and Run the Application
-    Clone the project from GitHub: https://github.com/ARelaxedScholar/DatabaseSQL-Project.git
-        This will launch the UI where you can interact with the booking features and explore the available functionalities.
-    Install the necessary dependencies (for both frontend and backend):
-        For frontend:
-            npm install
-        For backend:  
-            npm install @supabase/supabase-js
-    Navigate to project folder
-        Run the Frontend UI
-    To test the user interface (UI), simply open the welcome.html file in your browser. You can do this by: Right-clicking the file and selecting "Open with" your preferred browser.
-    Test the Backend (Database Interaction)
-        To test the backend, interact with the UI and use the credentials written up top and check on the new changes in the Supabase database.
+## Features
 
+### Client
+- Magic‑link authentication (no passwords)  
+- Search by date, capacity, price, hotel chain, room type  
+- Book, view and cancel reservations  
 
-Project Structure
-UI/: Contains the code for the frontend.
-backend/: Contains the code for the backend
-pics/ : Contains the pictures for the UI.
+### Employee / Admin
+- Check‑in / walk‑in / checkout flows  
+- CRUD management of hotels, chains, rooms, clients, employees  
+- "Required Views":  
+  - Rooms available per city zone  
+  - Total room capacity per hotel
 
+---
 
+## Tech Stack
+
+- **Database:** Supabase (PostgreSQL)  
+- **Backend:** Go (Gorilla Mux, pq, JWT) on GCP Cloud Run  
+- **Frontend:** HTML, CSS, vanilla JavaScript  
+- **Tools:** GitHub, VS Code, Supabase CLI  
+
+---
+
+## Prerequisites
+
+- **VS Code** (or any code editor)  
+- **A modern browser** (Chrome, Firefox, Edge, Safari)  
+- **Go** (v1.18+) if you need to run the backend locally  
+- **Python 3** (optional, for serving static files)  
+- **Supabase account** for database access user:sunflowerbookingtest@gmail.com pass:SunflowerBooking1234!
+
+---
+
+## Getting Started
+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/ARelaxedScholar/DatabaseSQL-Project.git
+   cd DatabaseSQL-Project/UI
+   ```
+
+2. **Serve the frontend**  
+   You can use any static file server. For example, with Python:
+   ```bash
+   python3 -m http.server 8000
+   ```
+   Then open your browser at `http://localhost:8000/index.html`.
+
+3. **Backend**  
+   The backend is deployed on GCP Cloud Run; no local backend run is required.  
+   If you do need to run locally:
+   ```bash
+   cd backend
+   go run .main.go
+   ```
+
+---
+
+## Project Structure
+
+---
+
+## API Reference
+
+### Public Endpoints
+
+| Method | Path                               | Description                              |
+|--------|------------------------------------|------------------------------------------|
+| GET    | `/hotelchains`                     | List hotel chains (id + name)            |
+| GET    | `/hotels`                          | List hotels (id + name)                  |
+| GET    | `/roomtypes`                       | List room types (id + name)              |
+| GET    | `/search/zones/rooms`              | Rooms available per city zone            |
+| GET    | `/search/hotels/{hotelID}/room-count` | Total rooms for a specific hotel      |
+
+### Client (Authentication Required)
+
+| Method | Path                                      | Description                          |
+|--------|-------------------------------------------|--------------------------------------|
+| POST   | `/clients/login`                          | Request magic login link             |
+| POST   | `/clients/register`                       | Create a new client                  |
+| GET    | `/clients/{id}`                           | Get client profile                   |
+| PUT    | `/clients/{id}`                           | Update client profile                |
+| GET    | `/clients/{id}/reservations`              | List client reservations             |
+| POST   | `/clients/{id}/reservations`              | Create a reservation                 |
+| DELETE | `/clients/{id}/reservations/{reservationId}` | Cancel a reservation             |
+
+### Employee / Admin (Authentication Required)
+
+- Similar CRUD endpoints for employees, hotels, rooms, etc.
+
+---
+
+## Testing
+
+### Backend
+```bash
+cd backend
+go test ./...
+```
+
+### Frontend
+Open your browser console → perform searches & reservations → verify in Network tab.
+
+---
+
+## Deployment
+
+- **Backend:** GCP Cloud Run (Docker)  
+- **Database:** Supabase  
+- **Frontend:** static host (eventually GitHub Pages)
+
+---
+
+## Contributing
+
+1. Fork the repository  
+2. Create a feature branch (`git checkout -b feat/your-feature`)  
+3. Commit your changes (`git commit -m "feat: ..."`)  
+4. Push to your fork (`git push origin feat/your-feature`)  
+5. Open a Pull Request
+
+---
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
