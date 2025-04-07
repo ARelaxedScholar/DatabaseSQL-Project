@@ -53,7 +53,7 @@ func (r *PostgresQueryRepository) GetHotelRoomCapacity(hotelId int) (int, error)
 func (r *PostgresQueryRepository) GetAvailableRoomsByZone() (map[string]int, error) {
 
 	query := `
-        SELECT * FROM rooms_by_zone;
+        SELECT * FROM rooms_by_zones;
     `
 
 	rows, err := r.db.Query(query)
