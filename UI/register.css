@@ -92,19 +92,20 @@
     background-color: #003060;
   }
   
-  /* --- Footer --- */
-  .foottext {
+  footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px 0;
+    color: white;
     text-align: center;
-    padding: 1rem;
-    background: #222;
-    color: #eee;
-  }
-  .foottext a {
-    color: #eee;
+}
+
+footer a {
+    color: white;
     text-decoration: none;
-    margin: 0 0.5rem;
-  }
-  .foottext a:hover {
-    text-decoration: underline;
-  }
-  
+    font-size: 1em;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    color: #ff9900;
+}
