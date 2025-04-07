@@ -138,6 +138,11 @@ func main() {
 
 	protectedClient := router.PathPrefix("/clients").Subrouter()
 	protectedClient.Use(rest.AuthMiddleWare(tokenService))
+
+	protectedClient.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("pong"))
+	}).Methods("GET")
 	protectedClient.HandleFunc("/clients/profile", clientHandler.GetProfile).Methods("GET")
 	protectedClient.HandleFunc("/clients/profile", clientHandler.UpdateProfile).Methods("PUT", "PATCH")
 	protectedClient.HandleFunc("/clients/reservations", clientHandler.MakeReservation).Methods("POST")
