@@ -182,8 +182,9 @@ func main() {
 	router.HandleFunc("/search/hotels/{hotelID:[0-9]+}/room-count", anonymousHandler.CountRoomsInHotel).Methods("GET")
 	router.HandleFunc("/search/zones/rooms", anonymousHandler.GetRoomsByZone).Methods("GET")
 
+	handler := corsMiddleware(router) // for CORS stuff, now everything is routed through it si o si
 	log.Println("Server is running on port :8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -191,6 +192,8 @@ func corsMiddleware(next http.Handler) http.Handler {
 		origin := r.Header.Get("Origin")
 		env := os.Getenv("ENV")
 		frontendDomain := os.Getenv("FRONTEND_DOMAIN")
+		log.Printf("⚙️ CORS middleware invoked: ENV=%q  Origin=%q  Path=%s  Method=%s",
+			env, origin, r.URL.Path, r.Method)
 
 		allow := false
 
