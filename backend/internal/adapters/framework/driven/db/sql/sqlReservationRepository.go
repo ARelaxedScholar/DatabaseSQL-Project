@@ -28,7 +28,7 @@ func scanReservation(scanner interface {
 	Scan(dest ...interface{}) error
 }) (*models.Reservation, error) {
 	res := &models.Reservation{}
-	var statusStr string
+	var status int
 	var startDate, endDate, reservationDate time.Time
 	var totalPrice float64 // Use float64 for DECIMAL
 
@@ -37,12 +37,12 @@ func scanReservation(scanner interface {
 		&res.ID,
 		&res.ClientID,
 		&res.RoomID,
-		&res.HotelID, 
+		&res.HotelID,
 		&startDate,
 		&endDate,
 		&totalPrice,
 		&reservationDate,
-		&statusStr,
+		&status,
 	)
 	if err != nil {
 		return nil, err // Let caller handle errors like ErrNotFound
@@ -55,12 +55,7 @@ func scanReservation(scanner interface {
 	res.TotalPrice = totalPrice
 
 	// Convert status string from DB back to enum int value
-	status, statusErr := models.ParseReservationStatus(statusStr)
-	if statusErr != nil {
-		// Handle error: data in DB doesn't match expected enum strings
-		return nil, fmt.Errorf("Invalid reservation status '%s' found in database: %w", statusStr, statusErr)
-	}
-	res.Status = status
+	res.Status = models.ReservationStatus(status)
 
 	return res, nil
 }
@@ -74,10 +69,7 @@ func (r *PostgresReservationRepository) Save(res *models.Reservation) (*models.R
 		return nil, errors.New("Invalid reservation data provided for save.")
 	}
 	// Convert Go enum status to string for DB
-	statusStr := res.Status.String()
-	if statusStr == "Invalid Status" { 
-		return nil, errors.New("Invalid reservation status provided for save.")
-	}
+	status := res.Status
 
 	query := `
 		INSERT INTO reservation (client_id, room_id, hotel_id, start_date, end_date, total_price, reservation_date, status)
@@ -97,8 +89,8 @@ func (r *PostgresReservationRepository) Save(res *models.Reservation) (*models.R
 		res.StartDate,
 		res.EndDate,
 		res.TotalPrice,
-		resDate,   
-		statusStr, 
+		resDate,
+		status,
 	).Scan(&res.ID)
 
 	if err != nil {
@@ -152,13 +144,13 @@ func (r *PostgresReservationRepository) GetByClient(clientID int) ([]*models.Res
 	for rows.Next() {
 		res, err := scanReservation(rows)
 		if err != nil {
-			return nil, handlePqError(err) 
+			return nil, handlePqError(err)
 		}
 		reservations = append(reservations, res)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, handlePqError(err) 
+		return nil, handlePqError(err)
 	}
 
 	// Returns an empty slice if no reservations are found, not ErrNotFound
@@ -177,8 +169,8 @@ func (r *PostgresReservationRepository) Update(res *models.Reservation) error {
 		return errors.New("Invalid reservation data provided for update.")
 	}
 	// Convert Go enum status to string for DB
-	statusStr := res.Status.String()
-	if statusStr == "Invalid Status" {
+	status := res.Status.String()
+	if status == "Invalid Status" {
 		return errors.New("Invalid reservation status provided for update.")
 	}
 
@@ -201,7 +193,7 @@ func (r *PostgresReservationRepository) Update(res *models.Reservation) error {
 		res.StartDate,
 		res.EndDate,
 		res.TotalPrice,
-		statusStr, // Update status string
+		status,
 		res.ID,
 	)
 	if err != nil {
