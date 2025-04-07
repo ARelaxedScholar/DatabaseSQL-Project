@@ -387,18 +387,21 @@ async function loadSearchRoomTypes() {
 
     async function loadSearchDropdowns() {
         // Load Hotel Chains
-        const chainSelect = document.getElementById('search-hotel-chain');
-        if (chainSelect && chainSelect.options.length <= 1) {
-            try {
-                const chains = await apiRequest('/admin/hotelchains', 'GET', null, false);
-                if (chains) {
-                    populateSelect('search-hotel-chain', chains, 'id', 'name', 'Toutes');
-                }
-            } catch (error) {
-                console.error("Failed to load hotel chains for search:", error);
-            }
-            await loadSearchRoomTypes();
-        }
+        try {
+            const chains = await apiRequest('/hotelchains', 'GET', null, false);
+            // chains comes back as [{ chainId: 1, name: "Hilton" }, …]
+        
+            const select = document.getElementById('search-hotel-chain');
+            select.innerHTML = `<option value="">Toutes</option>`;
+            chains.forEach(c => {
+              const opt = document.createElement('option');
+              opt.value = c.chainId;    // ← use chainId, not c.id
+              opt.textContent = c.name;
+              select.appendChild(opt);
+            });
+          } catch (err) {
+            console.error("Failed to load hotel chains:", err);
+          }
         // Load Room Types
         const roomTypeSelect = document.getElementById('search-room-type');
         if (roomTypeSelect && roomTypeSelect.options.length <= 1) {
@@ -1390,13 +1393,21 @@ if (!clientId) {
 
     async function loadRequiredViewsData() {
         clearAllFeedback();
-        if (localStorage.getItem('role') !== 'employee') return;
-        console.log("Loading required views...");
         loadView1_RoomsPerArea();
-        if (viewHotelCapacitySelect && viewHotelCapacitySelect.options.length <= 1) {
-            loadAdminHotels().catch(err => console.error("Hotel load failed for view 2", err));
-        }
+    
+        // Populate hotel dropdown for capacity view
+       const hotels = await apiRequest('/hotels',       'GET', null, false);
+    
+        const select = document.getElementById('view-hotel-capacity-select');
+        select.innerHTML = `<option value="">Choisir…</option>`;
+        hotels.forEach(h => {
+            const opt = document.createElement('option');
+            opt.value = h.hotelId;
+            opt.textContent = h.name;
+            select.appendChild(opt);
+        });
     }
+    
 
     async function loadView1_RoomsPerArea() {
         const feedbackId = 'views-feedback';
