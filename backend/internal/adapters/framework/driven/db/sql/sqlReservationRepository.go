@@ -54,7 +54,7 @@ func scanReservation(scanner interface {
 	res.ReservationDate = reservationDate
 	res.TotalPrice = totalPrice
 
-	// Convert status string from DB back to enum int value
+	
 	res.Status = models.ReservationStatus(status)
 
 	return res, nil
@@ -68,7 +68,6 @@ func (r *PostgresReservationRepository) Save(res *models.Reservation) (*models.R
 	if res.ClientID <= 0 || res.RoomID <= 0 || res.HotelID <= 0 || res.StartDate.IsZero() || res.EndDate.IsZero() || res.EndDate.Before(res.StartDate) || res.TotalPrice < 0 {
 		return nil, errors.New("Invalid reservation data provided for save.")
 	}
-	// Convert Go enum status to string for DB
 	status := res.Status
 
 	query := `
@@ -168,11 +167,7 @@ func (r *PostgresReservationRepository) Update(res *models.Reservation) error {
 	if res.ClientID <= 0 || res.RoomID <= 0 || res.HotelID <= 0 || res.StartDate.IsZero() || res.EndDate.IsZero() || res.EndDate.Before(res.StartDate) || res.TotalPrice < 0 {
 		return errors.New("Invalid reservation data provided for update.")
 	}
-	// Convert Go enum status to string for DB
-	status := res.Status.String()
-	if status == "Invalid Status" {
-		return errors.New("Invalid reservation status provided for update.")
-	}
+	status := res.Status
 
 	query := `
 		UPDATE reservation
