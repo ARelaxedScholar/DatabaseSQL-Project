@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sunflower Booking</title>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Sunflower Booking</div>
+            <ul class="nav-links">
+                <!-- Always Visible -->
+                <li><a href="#search-view" data-view="search-view">Rechercher</a></li>
+
+                <!-- Visible when logged OUT -->
+                <li id="login-nav"><a href="#login-view" data-view="login-view">Connexion</a></li>
+                <li id="register-nav"><a href="#register-view" data-view="register-view">Inscription</a></li>
+
+                <!-- Visible when logged IN as CLIENT -->
+                <li id="client-profile-nav" style="display:none;"><a href="#client-profile-view" data-view="client-profile-view">Mon Profil</a></li>
+                <li id="client-reservations-nav" style="display:none;"><a href="#client-reservations-view" data-view="client-reservations-view">Mes Réservations</a></li>
+
+                <!-- Visible when logged IN as EMPLOYEE or ADMIN -->
+                <li id="employee-dashboard-nav" style="display:none;"><a href="#employee-dashboard-view" data-view="employee-dashboard-view">Tableau Employé</a></li>
+                <li id="admin-dashboard-nav" style="display:none;"><a href="#admin-dashboard-view" data-view="admin-dashboard-view">Tableau Admin</a></li>
+                <li id="views-nav" style="display:none;"><a href="#required-views-view" data-view="required-views-view">Vues Requises</a></li>
+
+
+                <!-- Visible when logged IN -->
+                <li id="logout-nav" style="display:none;"><a href="#" id="logout-button">Déconnexion</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ==== LOGIN VIEW ==== -->
+        <section id="login-view" class="view">
+            <h2>Connexion</h2>
+            <p>Entrez votre adresse e‑mail et choisissez votre rôle pour recevoir un lien de connexion.</p>
+            <form id="login-form">
+                <label for="login-email">Adresse e‑mail :</label>
+                <input type="email" id="login-email" name="email" required />
+
+                <label>Rôle :</label>
+                <div>
+                  <input type="radio" id="role-client" name="role" value="client" required checked/>
+                  <label for="role-client">Client</label>
+                  <input type="radio" id="role-employee" name="role" value="employee"/>
+                  <label for="role-employee">Employé</label>
+                  <!-- Add Admin role if login endpoint supports it, otherwise Admin might just be an Employee -->
+                </div>
+                <button type="submit">Envoyer le lien</button>
+                <p id="login-feedback" class="feedback"></p>
+            </form>
+        </section>
+
+        <!-- ==== REGISTER VIEW (Client) ==== -->
+        <section id="register-view" class="view">
+            <h2>Inscription Client</h2>
+            <form id="register-form">
+                <label for="register-sin">SIN (9 chiffres):</label>
+                <input type="text" id="register-sin" name="sin" maxlength="9" minlength="9" required pattern="\d{9}" title="Doit contenir 9 chiffres."/>
+
+                <label for="register-firstname">Prénom :</label>
+                <input type="text" id="register-firstname" name="firstName" required />
+
+                <label for="register-lastname">Nom :</label>
+                <input type="text" id="register-lastname" name="lastName" required />
+
+                <label for="register-address">Adresse :</label>
+                <input type="text" id="register-address" name="address" />
+
+                <label for="register-phone">Téléphone :</label>
+                <input type="tel" id="register-phone" name="phone" />
+
+                <label for="register-email">Adresse e‑mail :</label>
+                <input type="email" id="register-email" name="email" required />
+
+                <button type="submit">S’inscrire</button>
+                <p id="register-feedback" class="feedback"></p>
+            </form>
+        </section>
+
+        <!-- ==== SEARCH / BOOKING VIEW (Anonymous / Client) ==== -->
+        <section id="search-view" class="view active"> <!-- Default view -->
+            <h2>Rechercher des Chambres</h2>
+            <form id="search-form">
+                <label for="search-start-date">Date d'arrivée :</label>
+                <input type="date" id="search-start-date" name="startDate" required />
+
+                <label for="search-end-date">Date de départ :</label>
+                <input type="date" id="search-end-date" name="endDate" required />
+
+                <label for="search-capacity">Capacité minimum :</label>
+                <input type="number" id="search-capacity" name="capacity" min="1" />
+
+                <label for="search-area">Zone (Ville) :</label>
+                <input type="text" id="search-area" name="area" /> <!-- Added Area -->
+
+                <label for="search-hotel-chain">Chaîne hôtelière :</label>
+                <select id="search-hotel-chain" name="hotelChainId">
+                    <option value="">Toutes</option>
+                    <!-- Options populated dynamically by JS -->
+                </select>
+
+                <label for="search-category">Catégorie (Étoiles min) :</label>
+                <input type="number" id="search-category" name="category" min="1" max="5" /> <!-- Changed to number -->
+
+                <label for="search-total-rooms">Nombre total de chambres dans l'hôtel (min) :</label>
+                <input type="number" id="search-total-rooms" name="totalRooms" min="1"/> <!-- Added Total Rooms -->
+
+                <label for="search-price">Prix max (€/nuit) :</label>
+                <input type="number" id="search-price" name="price" min="0" />
+
+                <button type="submit">Rechercher</button>
+                <p id="search-feedback" class="feedback"></p>
+            </form>
+            <div id="room-results-container">
+                <!-- Search results will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- ==== CLIENT PROFILE VIEW ==== -->
+        <section id="client-profile-view" class="view">
+             <h2>Mon Profil Client</h2>
+             <form id="client-profile-form">
+                <!-- Fields like SIN, Name, Address, Phone, Email -->
+                <label>SIN :</label> <span id="profile-sin"></span><br>
+                <label for="profile-firstname">Prénom :</label>
+                <input type="text" id="profile-firstname" name="firstName" required /><br>
+                <label for="profile-lastname">Nom :</label>
+                <input type="text" id="profile-lastname" name="lastName" required /><br>
+                <label for="profile-address">Adresse :</label>
+                <input type="text" id="profile-address" name="address" /><br>
+                <label for="profile-phone">Téléphone :</label>
+                <input type="tel" id="profile-phone" name="phone" /><br>
+                <label for="profile-email">Email :</label>
+                <input type="email" id="profile-email" name="email" required /><br>
+                <label>Date d'inscription :</label> <span id="profile-joindate"></span><br>
+
+                <button type="submit">Mettre à jour</button>
+                <p id="profile-feedback" class="feedback"></p>
+             </form>
+        </section>
+
+        <!-- ==== CLIENT RESERVATIONS VIEW ==== -->
+        <section id="client-reservations-view" class="view">
+             <h2>Mes Réservations</h2>
+             <div id="client-reservations-list">
+                 <!-- Reservation list will be injected here by JS -->
+             </div>
+             <p id="reservations-feedback" class="feedback"></p>
+        </section>
+
+        <!-- ==== EMPLOYEE DASHBOARD VIEW ==== -->
+        <section id="employee-dashboard-view" class="view">
+            <h2>Tableau de bord Employé</h2>
+
+            <!-- Check-in -->
+            <div class="dashboard-section">
+                <h3>Enregistrement (Check-in)</h3>
+                <form id="employee-checkin-form">
+                    <label for="checkin-reservation-id">ID de réservation :</label>
+                    <input type="number" id="checkin-reservation-id" name="reservationId" required/>
+                    <button type="submit">Transformer en Location</button>
+                    <p id="checkin-feedback" class="feedback"></p>
+                </form>
+            </div>
+
+            <!-- Create Stay (Walk-in) -->
+            <div class="dashboard-section">
+                <h3>Créer Location Directe (Walk-in)</h3>
+                <form id="employee-stay-form">
+                    <!-- Need inputs for Client ID (or search?), Room ID (search?), Dates, Payment Method -->
+                    <label for="stay-client-id">ID Client :</label>
+                    <input type="number" id="stay-client-id" name="clientId" required/> <!-- Simple ID for now, could be search later -->
+                    <label for="stay-room-id">ID Chambre :</label>
+                    <input type="number" id="stay-room-id" name="roomId" required/> <!-- Simple ID for now, could be search later -->
+                    <label for="stay-arrival-date">Date d'arrivée :</label>
+                    <input type="date" id="stay-arrival-date" name="arrivalDate" required/>
+                    <label for="stay-departure-date">Date de départ :</label>
+                    <input type="date" id="stay-departure-date" name="departureDate" required/>
+                    <label for="stay-payment-method">Méthode de Paiement :</label>
+                    <input type="text" id="stay-payment-method" name="paymentMethod" required/>
+                     <label for="stay-comments">Commentaires:</label>
+                    <textarea id="stay-comments" name="comments"></textarea>
+                    <!-- Price might be calculated or entered? -->
+                    <button type="submit">Créer Location</button>
+                    <p id="stay-feedback" class="feedback"></p>
+                </form>
+            </div>
+
+            <!-- Checkout -->
+            <div class="dashboard-section">
+                <h3>Départ (Checkout)</h3>
+                <form id="employee-checkout-form">
+                    <label for="checkout-stay-id">ID de Location (Séjour) :</label>
+                    <input type="number" id="checkout-stay-id" name="stayId" required/>
+                    <label for="checkout-payment-method">Méthode de Paiement Finale :</label>
+                    <input type="text" id="checkout-payment-method" name="paymentMethod" required/> <!-- Assuming payment method might change or confirmed at checkout -->
+                    <!-- Final price is likely needed from backend/stay details -->
+                    <button type="submit">Finaliser le Départ</button>
+                    <p id="checkout-feedback" class="feedback"></p>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==== ADMIN DASHBOARD VIEW ==== -->
+        <section id="admin-dashboard-view" class="view">
+            <h2>Tableau de bord Administrateur</h2>
+
+             <!-- Hotel Chain Management -->
+            <div class="dashboard-section">
+                <h3>Gestion des Chaînes Hôtelières</h3>
+                <button type="button" id="add-chain-button">Ajouter Chaîne</button>
+                <div id="admin-chains-list"> <!-- Table injected here --> </div>
+                <form id="admin-chain-form" style="display:none;"> <!-- Form for Add/Edit -->
+                    <input type="hidden" id="chain-edit-id" name="id">
+                    <label for="chain-name">Nom:</label> <input type="text" id="chain-name" name="name" required><br>
+                    <label for="chain-address">Adresse Centrale:</label> <input type="text" id="chain-address" name="centralAddress" required><br>
+                    <label for="chain-email">Email:</label> <input type="email" id="chain-email" name="email" required><br>
+                    <label for="chain-phone">Téléphone:</label> <input type="tel" id="chain-phone" name="telephone" required><br>
+                    <!-- number_of_hotel is managed automatically by backend/triggers -->
+                    <button type="submit">Sauvegarder Chaîne</button>
+                    <button type="button" id="cancel-chain-button">Annuler</button>
+                </form>
+                <p id="admin-chain-feedback" class="feedback"></p>
+            </div>
+
+             <!-- Hotel Management -->
+            <div class="dashboard-section">
+                <h3>Gestion des Hôtels</h3>
+                 <label for="admin-hotel-filter-chain">Filtrer par Chaîne:</label>
+                 <select id="admin-hotel-filter-chain"><option value="">Toutes</option></select> <!-- Populated by JS -->
+                 <button type="button" id="add-hotel-button">Ajouter Hôtel</button>
+                 <div id="admin-hotels-list"> <!-- Table injected here --> </div>
+                 <form id="admin-hotel-form" style="display:none;"> <!-- Form for Add/Edit -->
+                     <input type="hidden" id="hotel-edit-id" name="id">
+                     <label for="hotel-chain-select">Chaîne:</label> <select id="hotel-chain-select" name="chainId" required></select><br> <!-- Populated by JS -->
+                     <label for="hotel-name">Nom:</label> <input type="text" id="hotel-name" name="name" required><br>
+                     <label for="hotel-address">Adresse:</label> <input type="text" id="hotel-address" name="address" required><br>
+                     <label for="hotel-city">Ville:</label> <input type="text" id="hotel-city" name="city" required><br>
+                     <label for="hotel-email">Email:</label> <input type="email" id="hotel-email" name="email" required><br>
+                     <label for="hotel-phone">Téléphone:</label> <input type="tel" id="hotel-phone" name="telephone" required><br>
+                     <label for="hotel-rating">Étoiles:</label> <input type="number" id="hotel-rating" name="rating" min="1" max="5" required><br>
+                     <!-- number_of_rooms is managed automatically -->
+                     <button type="submit">Sauvegarder Hôtel</button>
+                     <button type="button" id="cancel-hotel-button">Annuler</button>
+                 </form>
+                 <p id="admin-hotel-feedback" class="feedback"></p>
+            </div>
+
+             <!-- Room Management -->
+            <div class="dashboard-section">
+                <h3>Gestion des Chambres</h3>
+                 <label for="admin-room-filter-hotel">Filtrer par Hôtel:</label>
+                 <select id="admin-room-filter-hotel"><option value="">Tous</option></select> <!-- Populated by JS -->
+                 <button type="button" id="add-room-button">Ajouter Chambre</button>
+                 <div id="admin-rooms-list"> <!-- Table injected here --> </div>
+                 <form id="admin-room-form" style="display:none;"> <!-- Form for Add/Edit -->
+                     <input type="hidden" id="room-edit-id" name="id">
+                     <label for="room-hotel-select">Hôtel:</label> <select id="room-hotel-select" name="hotelId" required></select><br> <!-- Populated by JS -->
+                     <label for="room-number">Numéro:</label> <input type="text" id="room-number" name="number" required><br>
+                     <label for="room-floor">Étage:</label> <input type="text" id="room-floor" name="floor" required><br>
+                     <label for="room-capacity">Capacité:</label> <input type="number" id="room-capacity" name="capacity" min="1" required><br>
+                     <label for="room-type">Type:</label> <select id="room-type" name="roomTypeId" required></select><br> <!-- Populated by JS -->
+                     <label for="room-price">Prix:</label> <input type="number" id="room-price" name="price" min="0" step="0.01" required><br>
+                     <label for="room-phone">Téléphone:</label> <input type="tel" id="room-phone" name="telephone" required><br>
+                     <label for="room-surface">Superficie (m²):</label> <input type="number" id="room-surface" name="surfaceArea" min="1" step="0.1" required><br>
+                     <label for="room-extensible">Extensible:</label> <input type="checkbox" id="room-extensible" name="isExtensible"><br>
+                     <label>Aménités:</label> <div id="room-amenities-checklist"></div><br> <!-- Populated by JS -->
+                     <label>Vues:</label> <div id="room-views-checklist"></div><br> <!-- Populated by JS -->
+                     <!-- Problems are likely managed separately or just viewed -->
+                     <button type="submit">Sauvegarder Chambre</button>
+                     <button type="button" id="cancel-room-button">Annuler</button>
+                 </form>
+                 <p id="admin-room-feedback" class="feedback"></p>
+            </div>
+
+             <!-- Client Account Management -->
+            <div class="dashboard-section">
+                <h3>Gestion des Comptes Clients</h3>
+                <button type="button" id="add-client-acc-button">Créer Compte Client</button>
+                <div id="admin-clients-list"> <!-- Table injected here --> </div>
+                 <form id="admin-client-form" style="display:none;"> <!-- Form for Add/Edit -->
+                    <input type="hidden" id="client-edit-id" name="id">
+                    <label for="client-acc-sin">SIN:</label> <input type="text" id="client-acc-sin" name="sin" maxlength="9" minlength="9" required pattern="\d{9}" title="Doit contenir 9 chiffres."/><br>
+                    <label for="client-acc-firstname">Prénom:</label> <input type="text" id="client-acc-firstname" name="firstName" required><br>
+                    <label for="client-acc-lastname">Nom:</label> <input type="text" id="client-acc-lastname" name="lastName" required><br>
+                    <label for="client-acc-address">Adresse:</label> <input type="text" id="client-acc-address" name="address"><br>
+                    <label for="client-acc-phone">Téléphone:</label> <input type="tel" id="client-acc-phone" name="phone"><br>
+                    <label for="client-acc-email">Email:</label> <input type="email" id="client-acc-email" name="email" required><br>
+                    <!-- Join date managed by backend -->
+                    <button type="submit">Sauvegarder Client</button>
+                    <button type="button" id="cancel-client-acc-button">Annuler</button>
+                 </form>
+                 <p id="admin-client-feedback" class="feedback"></p>
+            </div>
+
+             <!-- Employee Account Management -->
+            <div class="dashboard-section">
+                <h3>Gestion des Comptes Employés</h3>
+                 <button type="button" id="add-employee-acc-button">Créer Compte Employé</button>
+                <div id="admin-employees-list"> <!-- Table injected here --> </div>
+                 <form id="admin-employee-form" style="display:none;"> <!-- Form for Add/Edit -->
+                    <input type="hidden" id="employee-edit-id" name="id">
+                    <label for="employee-acc-sin">SIN:</label> <input type="text" id="employee-acc-sin" name="sin" maxlength="9" minlength="9" required pattern="\d{9}" title="Doit contenir 9 chiffres."/><br>
+                    <label for="employee-acc-firstname">Prénom:</label> <input type="text" id="employee-acc-firstname" name="firstName" required><br>
+                    <label for="employee-acc-lastname">Nom:</label> <input type="text" id="employee-acc-lastname" name="lastName" required><br>
+                    <label for="employee-acc-address">Adresse:</label> <input type="text" id="employee-acc-address" name="address" required><br>
+                    <label for="employee-acc-phone">Téléphone:</label> <input type="tel" id="employee-acc-phone" name="phone" required><br>
+                    <label for="employee-acc-email">Email:</label> <input type="email" id="employee-acc-email" name="email" required><br>
+                    <label for="employee-acc-hotel">Hôtel d'affectation:</label> <select id="employee-acc-hotel" name="hotelId" required></select><br> <!-- Populated by JS -->
+                    <label for="employee-acc-position">Poste:</label> <input type="text" id="employee-acc-position" name="position" required><br>
+                     <!-- Manager details (department, auth level) might need separate handling or fields here if creating managers directly -->
+                    <button type="submit">Sauvegarder Employé</button>
+                    <button type="button" id="cancel-employee-acc-button">Annuler</button>
+                 </form>
+                 <p id="admin-employee-feedback" class="feedback"></p>
+            </div>
+        </section>
+
+        <!-- ==== REQUIRED VIEWS DISPLAY ==== -->
+        <section id="required-views-view" class="view">
+            <h2>Vues Requises</h2>
+
+            <!-- View 1: Rooms per Area -->
+            <div class="dashboard-section">
+                <h3>Vue 1 : Nombre de chambres disponibles par zone</h3>
+                <div id="view-rooms-per-area">
+                    <!-- Data will be injected here by JS -->
+                </div>
+                 <button type="button" id="refresh-view1-button">Rafraîchir</button>
+            </div>
+
+            <!-- View 2: Hotel Capacity -->
+            <div class="dashboard-section">
+                <h3>Vue 2 : Capacité totale pour un hôtel spécifique</h3>
+                <label for="view-hotel-capacity-select">Choisir un Hôtel:</label>
+                <select id="view-hotel-capacity-select">
+                    <option value="">Sélectionner...</option>
+                    <!-- Options populated dynamically by JS -->
+                </select>
+                <div id="view-hotel-capacity-result">
+                    <!-- Result will be injected here by JS -->
+                </div>
+            </div>
+             <p id="views-feedback" class="feedback"></p>
+        </section>
+
+        <!-- ==== Generic Feedback Area (Optional) ==== -->
+        <div id="global-feedback"></div>
+
+    </main>
+
+    <footer>
+        <div class="foottext">
+            <p>© 2025 Sunflower Booking. Tous droits réservés.</p>
+            <!-- Add privacy/terms links if needed -->
+        </div>
+    </footer>
+
+    <!-- Link to the JavaScript file -->
+    <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+/* --- Base Styles & Variables --- */
+:root {
+    --primary-color: #ffc107; /* Sunflower yellow/orange */
+    --secondary-color: #4CAF50; /* Green accent */
+    --dark-color: #333;
+    --light-color: #f4f4f4;
+    --grey-color: #ddd;
+    --white-color: #fff;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+h2, h3 {
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 1.8em;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-top: 0; /* Remove default margin */
+}
+
+h3 {
+    font-size: 1.4em;
+    color: #555;
+}
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Layout: Header, Main, Footer --- */
+header {
+    background-color: var(--dark-color);
+    color: var(--white-color);
+    padding: 0.5rem 0; /* Reduced padding */
+    position: fixed; /* Fixed navbar */
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between logo and links */
+    align-items: center;
+    max-width: 1200px; /* Limit width */
+    margin: 0 auto; /* Center */
+    padding: 0 20px; /* Padding inside the container */
+}
+
+.navbar .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px; /* Spacing between links */
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline;
+}
+
+.nav-links a {
+    color: var(--white-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active-nav { /* Style for the currently active view link */
+    background-color: var(--primary-color);
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+#logout-button {
+    background-color: var(--danger-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+#logout-button:hover {
+    background-color: #c82333;
+    text-decoration: none;
+}
+
+
+main {
+    flex: 1; /* Allows main to grow and push footer down */
+    padding: 80px 20px 20px; /* Top padding for fixed navbar, other padding */
+    max-width: 1200px;
+    margin: 0 auto; /* Center content */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+footer {
+    background-color: var(--dark-color);
+    color: #ccc;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem; /* Space above footer */
+}
+
+footer .foottext {
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #ccc;
+}
+footer a:hover {
+    color: var(--primary-color);
+}
+
+/* --- View Switching --- */
+.view {
+    display: none; /* Hide all views by default */
+    background-color: var(--white-color);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem; /* Space between view sections if multiple were visible */
+}
+
+.view.active {
+    display: block; /* Show the active view */
+}
+
+/* --- Forms --- */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between form elements */
+}
+
+form label {
+    font-weight: bold;
+    margin-bottom: -10px; /* Pull label closer to input */
+    color: #555;
+    font-size: 0.95em;
+}
+
+/* Style input groups for radio buttons */
+form div label {
+    font-weight: normal; /* Normal weight for radio labels */
+    margin-right: 15px;
+}
+form div input[type="radio"],
+form div input[type="checkbox"] {
+    margin-right: 5px;
+    width: auto; /* Override full width */
+    vertical-align: middle;
+}
+.checkbox-group label { /* Style for amenity/view checklist labels */
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: normal;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--grey-color);
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    font-size: 1em;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+button,
+input[type="submit"] { /* Style submit inputs like buttons */
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1.05em;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    align-self: flex-start; /* Don't stretch button width */
+    margin-top: 10px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Specific button styles */
+button[type="button"] { /* General non-submit buttons */
+     background-color: #6c757d; /* Grey */
+}
+button[type="button"]:hover {
+     background-color: #5a6268;
+}
+
+.delete-button { /* Style delete buttons differently */
+    background-color: var(--danger-color);
+}
+.delete-button:hover {
+    background-color: #c82333;
+}
+.edit-button { /* Style edit buttons differently */
+    background-color: var(--primary-color);
+    color: var(--dark-color);
+}
+.edit-button:hover {
+    background-color: #e0a800;
+}
+
+
+/* Feedback Messages */
+.feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    display: none; /* Hidden by default */
+}
+.feedback.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+.feedback.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+/* --- Search Results --- */
+#room-results-container {
+    margin-top: 2rem;
+}
+
+.room-result {
+    border: 1px solid var(--grey-color);
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fdfdfd;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space out content and button */
+    align-items: center; /* Vertically align items */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.room-result .details {
+    flex-grow: 1; /* Allow details to take up available space */
+    margin-right: 15px; /* Space before the button */
+}
+
+.room-result h4 {
+    margin: 0 0 10px 0;
+    color: var(--secondary-color);
+}
+
+.room-result p {
+    margin: 5px 0;
+    font-size: 0.95em;
+    color: #555;
+}
+.room-result p strong {
+    color: #333;
+}
+
+.room-result .reserve-button { /* Specific class for the reserve button */
+    background-color: var(--primary-color);
+    color: var(--dark-color);
+    align-self: center; /* Keep button centered vertically if wrapping */
+    padding: 8px 15px;
+}
+
+.room-result .reserve-button:hover {
+     background-color: #e0a800;
+}
+
+/* --- Lists and Tables (Client Reservations, Admin) --- */
+#client-reservations-list div,
+.admin-list-item { /* Basic styling for list items */
+    border-bottom: 1px solid var(--grey-color);
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+#client-reservations-list div:last-child,
+.admin-list-item:last-child {
+    border-bottom: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid var(--grey-color);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #e9ecef;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+tr:nth-child(even) {
+    background-color: var(--light-color);
+}
+
+td .actions button { /* Style buttons within table cells */
+    padding: 5px 8px;
+    font-size: 0.9em;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+/* --- Dashboard Sections --- */
+.dashboard-section {
+    border: 1px solid var(--grey-color);
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 5px;
+    background-color: #fdfdfd;
+}
+
+.dashboard-section h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* --- Basic Responsiveness --- */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .nav-links li {
+        display: block; /* Stack links vertically */
+        text-align: center;
+        padding: 5px 0;
+        border-top: 1px solid #444;
+    }
+    .nav-links li:first-child {
+        border-top: none;
+    }
+    main {
+        padding-top: 160px; /* Adjust padding for taller collapsed navbar */
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    input[type="date"], input[type="number"] {
+        width: 100%; /* Stack date/number inputs */
+        display: block;
+    }
+    .room-result {
+        flex-direction: column; /* Stack room details and button */
+        align-items: flex-start; /* Align items left */
+    }
+    .room-result .reserve-button {
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+    table, thead, tbody, th, td, tr {
+        display: block; /* Force table elements into block layout */
+    }
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px; /* Hide table headers */
+    }
+    tr { border: 1px solid #ccc; margin-bottom: 10px; }
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%; /* Space for data label */
+        text-align: right;
+    }
+    td:before { /* Add data labels */
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        content: attr(data-label); /* Use data-label attribute (needs to be added in JS) */
+    }
+
+}
