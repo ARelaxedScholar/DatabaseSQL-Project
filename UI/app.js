@@ -203,37 +203,47 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleMagicLink() {
         const params = new URLSearchParams(window.location.search);
         const token = params.get('token');
-        const role = params.get('role');
+        const role  = params.get('role');
         const isAdminParam = params.get('admin');
-
+      
         if (token && role) {
-            localStorage.setItem('jwt', token);
-            localStorage.setItem('role', role);
-
-            if (isAdminParam === 'true' && role === 'employee') {
-                localStorage.setItem('isAdmin', 'true');
-                console.log("Admin flag set.");
-            } else {
-                localStorage.removeItem('isAdmin');
-            }
-
-            history.replaceState(null, '', window.location.pathname);
-            console.log(`Logged in as ${role}${isAdminUser() ? ' (Admin)' : ''}`);
-
-            if (role === 'client') {
-                showView('search-view');
-            } else if (role === 'employee') {
-                if (isAdminUser()) {
-                    showView('admin-dashboard-view');
-                } else {
-                    showView('employee-dashboard-view');
-                }
-            }
-            updateNav();
-            return true;
+          // Save JWT + role
+          localStorage.setItem('jwt', token);
+          localStorage.setItem('role', role);
+      
+          // Admin flag
+          if (isAdminParam === 'true' && role === 'employee') {
+            localStorage.setItem('isAdmin', 'true');
+          } else {
+            localStorage.removeItem('isAdmin');
+          }
+      
+          // --- NEW: decode JWT and store userId in localStorage ---
+          const decoded = decodeJwt(token) || {};
+          if (role === 'client' && decoded.userId) {
+            localStorage.setItem('clientId', decoded.userId);
+          } else if ((role === 'employee' || role === 'admin') && decoded.userId) {
+            localStorage.setItem('employeeId', decoded.userId);
+          }
+          // -----------------------------------------------
+      
+          // Clean up URL
+          history.replaceState(null, '', window.location.pathname);
+      
+          // Show appropriate view
+          if (role === 'client') {
+            showView('search-view');
+          } else if (role === 'employee') {
+            if (isAdminUser()) showView('admin-dashboard-view');
+            else showView('employee-dashboard-view');
+          }
+      
+          updateNav();
+          return true;
         }
         return false;
-    }
+      }
+      
 
     function logout() {
         localStorage.removeItem('jwt');
@@ -422,135 +432,156 @@ async function loadSearchRoomTypes() {
         e.preventDefault();
         clearAllFeedback();
         const feedbackId = 'search-feedback';
-        roomResultsContainer.innerHTML = '<p>Recherche en cours...</p>';
-    
+        roomResultsContainer.innerHTML = '<p>Recherche en cours…</p>';
+      
         const formData = new FormData(e.target);
-        const rawStartDate = formData.get('startDate');
-        const rawEndDate = formData.get('endDate');
-    
-        if (!rawStartDate || !rawEndDate) {
-            roomResultsContainer.innerHTML = '';
-            return displayFeedback(feedbackId, 'Les dates d\'arrivée et de départ sont requises.', true);
+        let rawStart = formData.get('startDate');
+        let rawEnd   = formData.get('endDate');
+        const today  = new Date().toISOString().slice(0,10);
+      
+        if (!rawStart) rawStart = today;
+        if (!rawEnd)   rawEnd   = today;
+        if (new Date(rawEnd) < new Date(rawStart)) {
+          roomResultsContainer.innerHTML = '';
+          return displayFeedback(feedbackId,
+            "La date de départ doit être après ou égale à la date d'arrivée.",
+            true
+          );
         }
-        if (new Date(rawEndDate) <= new Date(rawStartDate)) {
-            roomResultsContainer.innerHTML = '';
-            return displayFeedback(feedbackId, 'La date de départ doit être après la date d\'arrivée.', true);
-        }
-    
-        // Convert dates using your helper (assume MM-DD-YYYY as required)
-        const startDate = formatDateForBackend(rawStartDate);
-        const endDate = formatDateForBackend(rawEndDate);
-    
-        // Convert optional numeric fields
-        const capacity = formData.get('capacity') ? parseInt(formData.get('capacity')) : undefined;
-        const priceMin = formData.get('priceMin') ? parseFloat(formData.get('priceMin')) : undefined;
-        const priceMax = formData.get('priceMax') ? parseFloat(formData.get('priceMax')) : undefined;
-        const hotelChainId = formData.get('hotelChainId') ? parseInt(formData.get('hotelChainId')) : undefined;
-    
-        // For room type, the select returns a numeric ID (as a string). If provided, map it to the corresponding name.
-        const roomTypeId = formData.get('roomType');
-        let roomType;
-        if (roomTypeId) {
-            roomType = roomTypeMapping[roomTypeId];
-        }
-    
-        // Build the payload object following RoomSearchInput DTO
-        const searchPayload = {
-            startDate: startDate,
-            endDate: endDate,
-            capacity: capacity,
-            priceMin: priceMin,
-            priceMax: priceMax,
-            hotelChainId: hotelChainId,
-            roomType: roomType
-        };
-    
-        // Create URL query parameters, omitting undefined values
+      
+        // Two formats: MM-DD-YYYY for search, ISO for reservation
+        const formattedStart = formatDateForBackend(rawStart);
+        const formattedEnd   = formatDateForBackend(rawEnd);
+        const isoStart       = new Date(rawStart).toISOString();
+        const isoEnd         = new Date(rawEnd).toISOString();
+      
+        // Store for later if you still need lastSearchParams
+        lastSearchParams = { formattedStart, formattedEnd, isoStart, isoEnd };
+      
+        // Other optional filters
+        const capacity     = formData.get('capacity')     ? parseInt(formData.get('capacity'),10)     : undefined;
+        const priceMin     = formData.get('priceMin')     ? parseFloat(formData.get('priceMin'))      : undefined;
+        const priceMax     = formData.get('priceMax')     ? parseFloat(formData.get('priceMax'))      : undefined;
+        const hotelChainId = formData.get('hotelChainId') ? parseInt(formData.get('hotelChainId'),10) : undefined;
+        const roomTypeId   = formData.get('roomType');
+        const roomType     = roomTypeId ? roomTypeMapping[roomTypeId] : undefined;
+      
+        // Build query params
         const params = new URLSearchParams();
-        for (const key in searchPayload) {
-            if (searchPayload[key] !== undefined && searchPayload[key] !== '') {
-                params.append(key, searchPayload[key]);
-            }
-        }
-    
+        params.append('startDate', formattedStart);
+        params.append('endDate',   formattedEnd);
+        if (capacity)     params.append('capacity',     capacity);
+        if (priceMin)     params.append('priceMin',     priceMin);
+        if (priceMax)     params.append('priceMax',     priceMax);
+        if (hotelChainId) params.append('hotelChainId', hotelChainId);
+        if (roomType)     params.append('roomType',     roomType);
+      
         try {
-            const searchResult = await apiRequest(`/search/rooms?${params.toString()}`, 'GET', null, false);
-            const rooms = searchResult?.rooms;
-            if (!rooms || rooms.length === 0) {
-                roomResultsContainer.innerHTML = '<p>Aucune chambre disponible pour les critères sélectionnés.</p>';
-            } else {
-                roomResultsContainer.innerHTML = rooms.map(room => `
-                    <div class="room-result" data-room-id="${room.roomId}" data-hotel-id="${room.hotelId}" data-price="${room.price}">
-                        <div class="details">
-                            <h4>Chambre ${room.number || 'N/A'} - Étage ${room.floor || 'N/A'} (Hôtel ID: ${room.hotelId})</h4>
-                            <p><strong>Type:</strong> ${room.roomType || 'N/A'}</p>
-                            <p><strong>Capacité:</strong> ${room.capacity ?? '?'} | <strong>Superficie:</strong> ${room.surfaceArea ?? '?'} m²</p>
-                            <p><strong>Prix:</strong> ${(room.price ?? 0).toFixed(2)} € / nuit</p>
-                            <p><strong>Aménités:</strong> ${Array.isArray(room.amenities) ? room.amenities.join(', ') : 'N/A'}</p>
-                            <p><strong>Vues:</strong> ${Array.isArray(room.viewTypes) ? room.viewTypes.join(', ') : 'N/A'}</p>
-                            <p><strong>Extensible:</strong> ${room.isExtensible ? 'Oui' : 'Non'}</p>
-                        </div>
-                        <button class="reserve-button" type="button">Réserver</button>
-                    </div>
-                `).join('');
-            }
-        } catch (error) {
-            displayFeedback(feedbackId, `Erreur de recherche : ${error.message}`, true);
-            roomResultsContainer.innerHTML = '<p>Erreur lors de la recherche.</p>';
+          const { rooms } = await apiRequest(`/search/rooms?${params}`, 'GET', null, false);
+      
+          if (!rooms || rooms.length === 0) {
+            roomResultsContainer.innerHTML = '<p>Aucune chambre disponible.</p>';
+          } else {
+            roomResultsContainer.innerHTML = rooms.map(room => `
+              <div class="room-result"
+                   data-room-id="${room.roomId}"
+                   data-hotel-id="${room.hotelId}"
+                   data-price="${room.price}"
+                   data-start-date="${isoStart}"
+                   data-end-date="${isoEnd}">
+                <div class="details">
+                  <h4>Chambre ${room.number} – Étage ${room.floor} (Hôtel ${room.hotelId})</h4>
+                  <p><strong>Type :</strong> ${room.roomType}</p>
+                  <p><strong>Capacité :</strong> ${room.capacity} | <strong>Surface :</strong> ${room.surfaceArea} m²</p>
+                  <p><strong>Prix :</strong> ${room.price.toFixed(2)} € /nuit</p>
+                  <p><strong>Aménités :</strong> ${room.amenities.join(', ')}</p>
+                  <p><strong>Vues :</strong> ${room.viewTypes.join(', ')}</p>
+                  <p><strong>Extensible :</strong> ${room.isExtensible ? 'Oui' : 'Non'}</p>
+                </div>
+                <button class="reserve-button" type="button">Réserver</button>
+              </div>
+            `).join('');
+          }
+        } catch (err) {
+          console.error('Search error:', err);
+          displayFeedback(feedbackId, `Erreur de recherche : ${err.message}`, true);
+          roomResultsContainer.innerHTML = '<p>Erreur lors de la recherche.</p>';
         }
-    });
+
+        document.querySelectorAll('.room-result').forEach(card => {
+            console.log("Room card data:", {
+              roomId: card.dataset.roomId,
+              hotelId: card.dataset.hotelId,
+              startDate: card.dataset.startDate,
+              endDate: card.dataset.endDate
+            });
+          });
+      });
+      
+      
+      
     
 
-    // Reservation event: compute totalPrice and include DTO fields
-    roomResultsContainer?.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('reserve-button')) {
-            e.preventDefault();
-            clearAllFeedback();
-            const roomResultDiv = e.target.closest('.room-result');
-            const roomId = roomResultDiv?.dataset.roomId;
-            const hotelId = roomResultDiv?.dataset.hotelId;
-            const feedbackId = 'search-feedback';
+// --- Reserve button handler 
+roomResultsContainer.addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('reserve-button')) return;
+  
+    const card     = e.target.closest('.room-result');
+    const roomId   = card.dataset.roomId;
+    const hotelId  = card.dataset.hotelId;
+    const price    = parseFloat(card.dataset.price);
+    const startDate= card.dataset.startDate;   // ISO string
+    const endDate  = card.dataset.endDate;     // ISO string
+    let clientId = localStorage.getItem('clientId');
+if (!clientId) {
+  const decoded = decodeJwt(localStorage.getItem('jwt')) || {};
+  clientId = decoded.userId;
+}
 
-            if (!localStorage.getItem('jwt') || localStorage.getItem('role') !== 'client') {
-                displayFeedback(feedbackId, 'Veuillez vous connecter en tant que client pour réserver.', true);
-                showView('login-view');
-                return;
-            }
-            if (!roomId || !hotelId || !lastSearchParams.startDate || !lastSearchParams.endDate) {
-                displayFeedback(feedbackId, 'Information de réservation manquante. Veuillez relancer la recherche.', true);
-                return;
-            }
-            if (!confirm(`Confirmer la réservation pour la chambre ID ${roomId} du ${lastSearchParams.startDate} au ${lastSearchParams.endDate}?`)) return;
-
-            // Compute total price: number of nights * room price
-            const start = new Date(lastSearchParams.startDate);
-            const end = new Date(lastSearchParams.endDate);
-            const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-            const price = parseFloat(roomResultDiv.dataset.price);
-            const totalPrice = price * nights;
-
-            // Retrieve clientId (stored from profile load)
-            const clientId = parseInt(localStorage.getItem('clientId'), 10);
-
-            const reservationData = {
-                clientId: clientId,
-                hotelID: parseInt(hotelId, 10), // Note: key "hotelID" as per DTO
-                roomId: parseInt(roomId, 10),
-                startDate: lastSearchParams.startDate,
-                endDate: lastSearchParams.endDate,
-                reservationDate: new Date().toISOString(),
-                totalPrice: totalPrice,
-                status: 1 // Assuming 1 = "Confirmed"
-            };
-
-            try {
-                const result = await apiRequest('/clients/reservations', 'POST', reservationData, true);
-                displayFeedback(feedbackId, `Réservation réussie ! ID : ${result.reservationId}.`, false);
-            } catch (error) {
-                displayFeedback(feedbackId, `Erreur de réservation : ${error.message}`, true);
-            }
-        }
-    });
+    const feedbackId = 'search-feedback';
+  
+    console.log("Reserve click:", { roomId, hotelId, price, startDate, endDate, clientId });
+  
+    if (!roomId || !hotelId || !startDate || !endDate || !clientId) {
+      return displayFeedback(
+        feedbackId,
+        'Information de réservation manquante. Veuillez relancer la recherche.',
+        true
+      );
+    }
+  
+    const nights     = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000*60*60*24));
+    const totalPrice = price * nights;
+  
+    const reservationData = {
+      clientId:        parseInt(clientId,10),
+      hotelID:         parseInt(hotelId,10),
+      roomId:          parseInt(roomId,10),
+      startDate:       startDate,
+      endDate:         endDate,
+      reservationDate: new Date().toISOString(),
+      totalPrice:      totalPrice,
+      status:          1
+    };
+  
+    console.log("Reservation payload:", reservationData);
+  
+    try {
+      const result = await apiRequest('/clients/reservations','POST',reservationData,true);
+      console.log("Reservation success:", result);
+      displayFeedback(feedbackId, `Réservation réussie ! ID : ${result.reservationId}.`, false);
+    } catch (err) {
+      console.error("Reservation error:", err);
+      displayFeedback(feedbackId, `Erreur de réservation : ${err.message}`, true);
+    }
+  });
+  
+  
+  
+  
+  
+  
+  
 
     // --- Client Profile Logic ---
     const profileForm = document.getElementById('client-profile-form');
