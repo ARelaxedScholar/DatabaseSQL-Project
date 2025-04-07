@@ -143,7 +143,7 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("pong"))
 	}).Methods("GET")
-	protectedClient.HandleFunc("/clients/profile", clientHandler.GetProfile).Methods("GET")
+	protectedClient.HandleFunc("/profile", clientHandler.GetProfile).Methods("GET")
 	protectedClient.HandleFunc("/clients/profile", clientHandler.UpdateProfile).Methods("PUT", "PATCH")
 	protectedClient.HandleFunc("/clients/reservations", clientHandler.MakeReservation).Methods("POST")
 	protectedClient.HandleFunc("/clients/reservations", clientHandler.ViewReservations).Methods("GET")
