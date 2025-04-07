@@ -50,6 +50,7 @@ func main() {
 	emailApiKey := os.Getenv("EMAIL_API_KEY")
 	from := os.Getenv("NO_REPLY_EMAIL")
 	appLink := os.Getenv("APP_LINK")
+	frontend_domain := os.Getenv("FRONTEND_DOMAIN")
 	if domain == "" || emailApiKey == "" || from == "" || appLink == "" {
 		log.Fatal("Missing required environment variables: EMAIL_DOMAIN, EMAIL_API_KEY, NO_REPLY_DOMAIN, APP_LINK")
 	}
@@ -104,13 +105,13 @@ func main() {
 
 	// Instantiate application use cases.
 	registrationUseCase := defaultClientUseCases.NewClientRegistrationUseCase(clientService)
-	loginUseCase := defaultClientUseCases.NewClientLoginUseCase(clientRepo, tokenService, emailService, appLink)
+	loginUseCase := defaultClientUseCases.NewClientLoginUseCase(clientRepo, tokenService, emailService, frontend_domain)
 	profileUseCase := defaultClientUseCases.NewClientProfileManagementUseCase(clientService, clientRepo)
 	makeReservationUseCase := defaultClientUseCases.NewClientMakeReservationUseCase(reservationService)
 	resManagementUseCase := defaultClientUseCases.NewClientReservationsManagementUseCase(reservationService)
 	searchRoomsUseCase := defaultAnonymousUseCases.NewSearchRoomsUseCase(roomRepo, queryRepo)
 
-	employeeLoginUseCase := defaultEmployeeUseCases.NewEmployeeLoginUseCase(employeeRepo, tokenService, emailService, appLink)
+	employeeLoginUseCase := defaultEmployeeUseCases.NewEmployeeLoginUseCase(employeeRepo, tokenService, emailService, frontend_domain)
 	checkInUseCase := defaultEmployeeUseCases.NewEmployeeCheckInUseCase(stayService, reservationRepo, roomRepo)
 	createNewStayUseCase := defaultEmployeeUseCases.NewEmployeeCreateNewStayUseCase(stayService)
 	checkoutUseCase := defaultEmployeeUseCases.NewEmployeeCheckoutUseCase(stayService, paymentService)
