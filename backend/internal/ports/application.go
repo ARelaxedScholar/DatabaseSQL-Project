@@ -1,6 +1,7 @@
 package ports
 
 import (
+	"context"
 	"time"
 
 	"github.com/sql-project-backend/internal/models"
@@ -172,4 +173,8 @@ type StayRepository interface {
 type QueryRepository interface {
 	GetAvailableRoomsByZone() (map[string]int, error)
 	GetHotelRoomCapacity(hotelId int) (int, error)
+}
+
+type RoomTypeRepository interface {
+	ListRoomTypes(ctx context.Context) ([]*dto.RoomTypePublic, error)
 }
