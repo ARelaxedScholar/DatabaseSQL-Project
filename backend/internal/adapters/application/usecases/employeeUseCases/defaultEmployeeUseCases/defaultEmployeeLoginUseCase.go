@@ -37,8 +37,8 @@ func (uc *DefaultEmployeeLoginUseCase) Login(input dto.EmployeeLoginInput) (dto.
 		return dto.EmployeeLoginOutput{}, err
 	}
 
-	// Create a login link with the token. 
-	loginLink := fmt.Sprintf("https://%s/magic?token=%s", uc.appLink, token)
+	// Create a login link with the token.
+	loginLink := fmt.Sprintf("%s/magic?token=%s", uc.appLink, token)
 
 	// Send the login link via the email service.
 	if err := uc.emailService.SendLoginLink(employee.Email, loginLink); err != nil {
