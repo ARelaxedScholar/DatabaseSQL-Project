@@ -37,7 +37,7 @@ func (uc *DefaultClientLoginUseCase) Login(input dto.ClientLoginInput) (dto.Clie
 	}
 
 	// Create a login link with the token
-	loginLink := fmt.Sprintf("%s?token=%s", uc.appLink, token)
+	loginLink := fmt.Sprintf("%s?token=%s&role=client", uc.appLink, token)
 
 	if err := uc.emailService.SendLoginLink(client.Email, loginLink); err != nil {
 		return dto.ClientLoginOutput{}, errors.New("failed to send login email")
