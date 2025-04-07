@@ -144,10 +144,10 @@ func main() {
 		w.Write([]byte("pong"))
 	}).Methods("GET")
 	protectedClient.HandleFunc("/profile", clientHandler.GetProfile).Methods("GET")
-	protectedClient.HandleFunc("/clients/profile", clientHandler.UpdateProfile).Methods("PUT", "PATCH")
-	protectedClient.HandleFunc("/clients/reservations", clientHandler.MakeReservation).Methods("POST")
-	protectedClient.HandleFunc("/clients/reservations", clientHandler.ViewReservations).Methods("GET")
-	protectedClient.HandleFunc("/clients/reservations/{reservationID:[0-9]+}", clientHandler.CancelReservation).Methods("DELETE")
+	protectedClient.HandleFunc("/profile", clientHandler.UpdateProfile).Methods("PUT", "PATCH")
+	protectedClient.HandleFunc("/reservations", clientHandler.MakeReservation).Methods("POST")
+	protectedClient.HandleFunc("/reservations", clientHandler.ViewReservations).Methods("GET")
+	protectedClient.HandleFunc("/reservations/{reservationID:[0-9]+}", clientHandler.CancelReservation).Methods("DELETE")
 
 	// Employee routes.
 	router.HandleFunc("/employees/login", employeeHandler.LoginEmployee).Methods("POST")
@@ -155,8 +155,8 @@ func main() {
 
 	protectedEmployee := router.PathPrefix("/employees").Subrouter()
 	protectedEmployee.Use(rest.AuthMiddleWare(tokenService))
-	protectedEmployee.HandleFunc("/employees/checkin", employeeHandler.CheckIn).Methods("POST")
-	protectedEmployee.HandleFunc("/employees/stay", employeeHandler.CreateNewStay).Methods("POST")
+	protectedEmployee.HandleFunc("/checkin", employeeHandler.CheckIn).Methods("POST")
+	protectedEmployee.HandleFunc("/stay", employeeHandler.CreateNewStay).Methods("POST")
 	// New checkout route for employees.
 	protectedEmployee.HandleFunc("/employees/checkout", employeeHandler.Checkout).Methods("POST")
 
