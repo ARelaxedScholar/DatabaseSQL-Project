@@ -155,18 +155,26 @@ document.addEventListener('DOMContentLoaded', () => {
             loginNav.style.display = 'none';
             registerNav.style.display = 'none';
             logoutNav.style.display = 'list-item';
-
+        
+            // Client links
             if (role === 'client') {
                 clientProfileNav.style.display = 'list-item';
                 clientReservationsNav.style.display = 'list-item';
-            } else if (role === 'employee') {
+            }
+        
+            // Employee links
+            if (role === 'employee') {
                 employeeDashboardNav.style.display = 'list-item';
-                viewsNav.style.display = 'list-item';
                 if (isAdmin) {
                     adminDashboardNav.style.display = 'list-item';
                 }
             }
+        
+            // Show “Vues Requises” for any logged‑in user
+            viewsNav.style.display = 'list-item';
         }
+        
+        
     }
 
     /** Shows a specific view section and hides others. Also triggers data loading. */
@@ -188,7 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'client-profile-view': loadClientProfile(); break;
                 case 'client-reservations-view': loadClientReservations(); break;
                 case 'admin-dashboard-view': if(isAdminUser()) loadAdminData(); else console.warn("Attempt to load admin data without admin rights"); break;
-                case 'required-views-view': if(localStorage.getItem('role') === 'employee') loadRequiredViewsData(); else console.warn("Attempt to load views data without employee rights"); break;
+                case 'required-views-view':
+    loadRequiredViewsData();
+    break;
                 case 'employee-dashboard-view': /* Load data if needed */ break;
             }
         } else {
@@ -274,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (viewId.startsWith('client-') && role !== 'client') authorized = false;
             if (viewId.startsWith('employee-') && role !== 'employee') authorized = false;
             if (viewId.startsWith('admin-') && !isAdmin) authorized = false;
-            if (viewId.startsWith('required-views-') && role !== 'employee') authorized = false;
+            
 
             if (authorized) {
                 showView(viewId);
@@ -521,7 +531,17 @@ async function loadSearchRoomTypes() {
       
       
     
-
+      function isoToBackendDate(isoString) {
+        const d = new Date(isoString);
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${mm}-${dd}-${yyyy}`;
+      }
+      
+      // Example:
+      console.log( isoToBackendDate("2025-04-15T00:00:00.000Z") ); // "04-15-2025"
+      
 // --- Reserve button handler 
 roomResultsContainer.addEventListener('click', async (e) => {
     if (!e.target.classList.contains('reserve-button')) return;
