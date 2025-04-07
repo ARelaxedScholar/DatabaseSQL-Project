@@ -27,25 +27,29 @@ func (h *AnonymousHandler) CountRoomsInHotel(w http.ResponseWriter, r *http.Requ
 	vars := mux.Vars(r)
 	idStr, ok := vars["hotelID"]
 	if !ok {
-		http.Error(w, "Missing hotel ID", http.StatusBadRequest)
+		http.Error(w, "hotelID missing", http.StatusBadRequest)
+		return
+	}
+	hotelID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid hotelID", http.StatusBadRequest)
 		return
 	}
 
-	hotelID, err := strconv.Atoi(idStr)
-	if err != nil || hotelID <= 0 {
-		http.Error(w, "Invalid hotel ID: must be a positive integer", http.StatusBadRequest)
-		return
-	}
+	log.Printf("CountRoomsInHotel called with hotelID=%d\n", hotelID)
 
 	count, err := h.SearchRoomsUseCase.GetNumberOfRoomsForHotel(hotelID)
 	if err != nil {
-		log.Printf("Error counting rooms for hotel %d: %v", hotelID, err) // Log internally
-		http.Error(w, "Could not fetch room count", http.StatusInternalServerError)
+		log.Printf("ERROR CountRoomsInHotel SQL: %v\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	resp := map[string]int{"total_capacity": count}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]int{"count": count})
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		log.Printf("ERROR encoding JSON: %v\n", err)
+	}
 }
 
 func (h *AnonymousHandler) GetRoomsByZone(w http.ResponseWriter, r *http.Request) {
@@ -151,17 +155,16 @@ func (h *AnonymousHandler) SearchRooms(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseTimeParam(s string) (time.Time, error) {
-    if s == "" {
-        return time.Time{}, nil
-    }
-    // Parse the date in the "MM-DD-YYYY" format.
-    t, err := time.Parse("01-02-2006", s)
-    if err != nil {
-        return time.Time{}, err
-    }
-    return t, nil
+	if s == "" {
+		return time.Time{}, nil
+	}
+	// Parse the date in the "MM-DD-YYYY" format.
+	t, err := time.Parse("01-02-2006", s)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return t, nil
 }
-
 
 func parseIntParam(s string) (int, error) {
 	if s == "" {
