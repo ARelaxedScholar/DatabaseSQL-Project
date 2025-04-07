@@ -377,6 +377,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function formatDateForBackend(dateStr) {
+        const dateObj = new Date(dateStr);
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+        const day = dateObj.getDate().toString().padStart(2, '0');
+        const year = dateObj.getFullYear().toString(); // Full year
+        return `${month}-${day}-${year}`;
+      }
+
     searchForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearAllFeedback();
@@ -397,8 +405,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return displayFeedback(feedbackId, 'La date de départ doit être après la date d\'arrivée.', true);
         }
 
-        params.append('startDate', startDate);
-        params.append('endDate', endDate);
+        params.append('startDate', formatDateForBackend(startDate));
+        params.append('endDate', formatDateForBackend(endDate));
         lastSearchParams = { startDate, endDate };
 
         if (formData.get('capacity')) params.append('capacity', formData.get('capacity'));
