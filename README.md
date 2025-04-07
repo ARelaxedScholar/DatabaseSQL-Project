@@ -37,26 +37,19 @@ A Supabase account to access the database
         Password: SunflowerBooking1234!
 
 Steps to Install and Run the Application
-    Clone the project or extract the .zip file Use the following command to clone the project from GitHub: https://github.com/ARelaxedScholar/DatabaseSQL-Project.git
-
-    This will launch the UI where you can interact with the booking features and explore the available functionalities.
-
+    Clone the project from GitHub: https://github.com/ARelaxedScholar/DatabaseSQL-Project.git
+        This will launch the UI where you can interact with the booking features and explore the available functionalities.
     Install the necessary dependencies (for both frontend and backend):
         For frontend:
             npm install
-        For backend (if applicable, add specific steps for Go or any other technology used).
-
+        For backend:  
+            npm install @supabase/supabase-js
     Navigate to project folder
         Run the Frontend UI
-
     To test the user interface (UI), simply open the welcome.html file in your browser. You can do this by: Right-clicking the file and selecting "Open with" your preferred browser.
-
     Test the Backend (Database Interaction)
-    To test the backend and interact with the Supabase database, you can use tools like Postman or the command line.
-        Using Postman:
-            You can set up requests (GET, POST, etc.) to interact with the Supabase database by entering the appropriate API endpoints. No environment variables are required, as Supabase is accessible directly via the API.
-        Using the Command Line:
-            You can interact with the database through the Supabase CLI or any command-line tool that supports SQL queries. No environment variables are required, as the connection details are hardcoded or specified directly in the command.
+        To test the backend, interact with the UI and use the credentials written up top and check on the new changes in the Supabase database.
+
 
 Project Structure
 UI/: Contains the code for the frontend.
