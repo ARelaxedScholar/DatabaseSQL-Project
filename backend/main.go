@@ -195,6 +195,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 		allow := false
 
 		if env == "development" {
+			log.Println("⚙️ CORS middleware loaded, ENV=", os.Getenv("ENV"))
 			if strings.HasPrefix(origin, "http://localhost:") || strings.HasPrefix(origin, "http://127.0.0.1:") {
 				allow = true
 			}
