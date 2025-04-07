@@ -191,6 +191,8 @@ func corsMiddleware(next http.Handler) http.Handler {
 		origin := r.Header.Get("Origin")
 		env := os.Getenv("ENV")
 		frontendDomain := os.Getenv("FRONTEND_DOMAIN")
+		log.Printf("⚙️ CORS middleware invoked: ENV=%q  Origin=%q  Path=%s  Method=%s",
+			env, origin, r.URL.Path, r.Method)
 
 		allow := false
 
