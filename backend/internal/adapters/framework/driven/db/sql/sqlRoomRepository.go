@@ -427,7 +427,7 @@ func (r *PostgresRoomRepository) FindAvailableRooms(hotelID int, startDate time.
 		return nil, errors.New("Invalid start or end date provided.")
 	}
 	queryIDs := ` SELECT r.id FROM room r WHERE r.hotel_id = $1
-          AND NOT EXISTS ( SELECT 1 FROM reservation res WHERE res.room_id = r.id AND res.status != 'Cancelled' AND res.start_date < $2 AND res.end_date > $3 )
+          AND NOT EXISTS ( SELECT 1 FROM reservation res WHERE res.room_id = r.id AND res.status != 3 AND res.start_date < $2 AND res.end_date > $3 )
           AND NOT EXISTS ( SELECT 1 FROM stay s WHERE s.room_id = r.id AND s.arrival_date < $2 AND s.departure_date > $3 )
         ORDER BY r.id `
 	rowsIDs, err := r.db.Query(queryIDs, hotelID, endDate, startDate)
@@ -500,7 +500,7 @@ func (r *PostgresRoomRepository) SearchRooms(startDate time.Time, endDate time.T
 
 		// Add conditions to exclude rooms with overlapping reservations
 		queryFilter.WriteString(fmt.Sprintf(
-			"AND NOT EXISTS ( SELECT 1 FROM reservation res WHERE res.room_id = r.id AND res.status != 'Cancelled' AND res.start_date < $%d AND res.end_date > $%d ) ",
+			"AND NOT EXISTS ( SELECT 1 FROM reservation res WHERE res.room_id = r.id AND res.status != 3 AND res.start_date < $%d AND res.end_date > $%d ) ",
 			endDateArgIdx, startDateArgIdx,
 		))
 		// Add conditions to exclude rooms with overlapping stays
@@ -538,4 +538,3 @@ func (r *PostgresRoomRepository) SearchRooms(startDate time.Time, endDate time.T
 	}
 	return r.fetchRoomsWithDetails(availableRoomIDs)
 }
-
